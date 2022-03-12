@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-// @ts-nocheck
+// @ts-nocheck@
 
 import App from "./App.vue"
 import axios from "axios"
@@ -15,9 +15,9 @@ const app = createApp(App)
   .use(VueAxios, axios)
   .mount("#app")
 
-app.use(Toaster, {
-  position: "bottom-right",
-  duration: 5555,
-}).provide("toast", app.config.globalProperties.$toast)
+// app.use(Toaster, {
+//   position: "bottom-right",
+//   duration: 5555,
+// }).provide("toast", app.config.globalProperties.$toast)
   
-app.mount("#app")
+// app.mount("#app")

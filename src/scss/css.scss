@@ -1,12 +1,12 @@
 /**
  * vars
  */
-$text:             #;
+$text:             #e4e4e4;
 $text_white:       #f2f2f2;
 $text_white_hover: #e3e3e3;
-$background:       #
-$primary:          #
-$primary_hover:    #
+$background:       #141422;
+$primary:          #49497B;
+$primary_hover:    #3b3b6a;
 
 
 /**
@@ -19,6 +19,13 @@ html, body {
   margin: 0;
   padding: 0;
   font-size: 16px;
+}
+html {
+  height: -webkit-fill-available;
+}
+body {
+  height: 100vh;
+  height: -webkit-fill-available;
 }
 a {
   color: $text;
