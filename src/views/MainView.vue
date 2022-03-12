@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
+import TrySet from "../components/modules/TrySet.vue"
 import LoadCards from "../components/parts/LoadCards.vue"
 
 const MAX_TRIES = 6
@@ -101,10 +102,14 @@ const showHotKeys = () => {
         margin: auto 3px;
         border: solid 1px #5d5d68;
         border-radius: 3px;
-        img, svg {
+        cursor: pointer;
+        img {
           width: 100%;
           height: 100%;
           filter: saturate(0.7);
+          &:hover {
+            opacity: 0.777;            
+          }
         }
       }
     }

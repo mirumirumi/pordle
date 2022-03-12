@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { v4 as uuidv4 } from "uuid"
-import TransparentBack from "../modules/TransparentBack.vue"
+import TransparentBack from "./TransparentBack.vue"
 
 const p = defineProps<{
   items: Array<string>,
