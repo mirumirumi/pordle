@@ -1,23 +1,10 @@
-import { InjectionKey } from 'vue'
-import { createStore, Store, useStore as baseUseStore } from 'vuex'
+import { defineStore } from "pinia"
 
-export interface State {
-}
-
-export const store = createStore<State>({
-  state: {
-  },
+export const useStore = defineStore("main", {
+  state: () => ({
+  }),
   getters: {
-  },
-  mutations: {
   },
   actions: {
   },
-  modules: {
-  }
 })
-
-export const key: InjectionKey<Store<State>> = Symbol();
-export const useStore = () => {  //eslint-disable-line
-  return baseUseStore(key)
-}
