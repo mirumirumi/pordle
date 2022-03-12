@@ -1,9 +1,7 @@
 <template>
   <div class="main">
     <div id="field">
-      <div v-for="tries in MAX_TRIES" class="try_set" :key="tries">
-        <div v-for="card in 5" class="input_box" :id="tries + `_` + card" :key="card"></div>
-      </div>
+      <TrySetVue v-for="trySet, index in trySetSet" :positionTrySet="index + 1" :currentTrying="currentTrying" :cards="trySet" :key="index" />
     </div>
     <div id="deck">
       <transition name="fade">
@@ -24,11 +22,12 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import TrySet from "../components/modules/TrySet.vue"
+import { Card, Cards, TrySet } from "../utils/defines"
+import TrySetVue from "../components/modules/TrySet.vue"
 import LoadCards from "../components/parts/LoadCards.vue"
 
-const MAX_TRIES = 6
 const SUITS = ["spade", "heart", "diamond", "club"]
+const currentTrying = ref(1)
 
 const isNotLoading = ref(false)
 let numLoadedImages = 0
@@ -38,6 +37,15 @@ const loaded = () => {
   if (numLoadedImages == 52)
     isNotLoading.value = true
 }
+
+const trySetSet = ref<TrySet<Cards<Card>>>([
+  [{}, {}, {}, {}, {}],
+  [{}, {}, {}, {}, {}],
+  [{}, {}, {}, {}, {}],
+  [{}, {}, {}, {}, {}],
+  [{}, {}, {}, {}, {}],
+  [{}, {}, {}, {}, {}],
+])
 
 const chooseCard = (suit: string, number: number) => {
   1
@@ -60,19 +68,6 @@ const showHotKeys = () => {
   }
   #field {
     height: 60%;
-    .try_set {
-      height: 16.666%;
-      padding: 3px 0;
-      .input_box {
-        display: inline-block;
-        width: auto;
-        height: 100%;
-        aspect-ratio: 0.6887;
-        margin: auto 4px;
-        border: solid 1.7px #5d5d68;
-        border-radius: 3px;
-      }
-    }
   }
   #deck {
     position: relative;
