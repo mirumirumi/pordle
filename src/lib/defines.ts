@@ -1,6 +1,10 @@
+export type Suit = "spade" | "heart" | "diamond" | "club"
+
+export type Num = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13
+
 export interface Card {
-  suit?:    "spade" | "heart" | "diamond" | "club",
-  number?:  1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13,
+  suit?:    Suit,
+  number?:  Num,
   status?:  "hit" | "blow",
 }
 

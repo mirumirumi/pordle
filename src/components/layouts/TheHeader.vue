@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { toBool } from '@/utils/utils'
+import { toBool } from '@/lib/utils'
 import SvgIcon from '../parts/SvgIcon.vue'
 
 const isNotShowedRoyal = ref(toBool(localStorage.getItem("isNotShowedRoyal") ?? "true"))

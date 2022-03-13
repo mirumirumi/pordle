@@ -105,6 +105,16 @@ ul, li {
   opacity: 0.666;
 }
 
+.gyun-enter-active {
+  transition: transform 0.065s ease;
+}
+.gyun-enter-from {
+  transform: scale(0.9);
+}
+.gyun-enter-to {
+  transform: scale(1.065);
+}
+
 /**
  * responsive
  */

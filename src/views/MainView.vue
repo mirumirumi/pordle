@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div id="field">
-      <TrySetVue v-for="trySet, index in trySetSet" :positionTrySet="index + 1" :currentTrying="currentTrying" :cards="trySet" :key="index" />
+      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" :key="index" />
     </div>
     <div id="deck">
       <transition name="fade">
@@ -10,9 +10,9 @@
         </div>
       </transition>
       <div v-for="suit in SUITS" class="suit" :key="suit">
-        <div v-for="number in 13" class="card" @click="chooseCard(suit, number)" :key="number">
+        <div v-for="num in NUMS" class="card" :class="{ 'loaded': isNotLoading }" @click="chooseCard(suit, num)" :key="num">
           <transition name="fade">
-            <img v-show="isNotLoading" :src="`cards/` + number + `_of_` + suit + `s.svg`" alt="🃏" @load="loaded">
+            <img v-show="isNotLoading" :src="`cards/` + num + `_of_` + suit + `s.svg`" alt="🃏" @load="loaded">
           </transition>
         </div>
       </div>
@@ -22,19 +22,22 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { Card, Cards, TrySet } from "../utils/defines"
+import { isEmpty } from "../lib/utils"
+import { Suit, Num, Card, Cards, TrySet } from "../lib/defines"
 import TrySetVue from "../components/modules/TrySet.vue"
 import LoadCards from "../components/parts/LoadCards.vue"
 
-const SUITS = ["spade", "heart", "diamond", "club"]
-const currentTrying = ref(1)
+const SUITS: Array<Suit> = ["spade", "heart", "diamond", "club"]
+const NUMS:  Array<Num> =  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+const currentTrying = ref(0)
+const positionOccuredChange = ref("0_0")
 
 const isNotLoading = ref(false)
 let numLoadedImages = 0
 
 const loaded = () => {
   numLoadedImages++
-  if (numLoadedImages == 52)
+  if (numLoadedImages === 52)
     isNotLoading.value = true
 }
 
@@ -47,8 +50,17 @@ const trySetSet = ref<TrySet<Cards<Card>>>([
   [{}, {}, {}, {}, {}],
 ])
 
-const chooseCard = (suit: string, number: number) => {
-  1
+const chooseCard = (suit: Suit, num: Num) => {
+  for(let i = 0; i < trySetSet.value[currentTrying.value].length; i++) {
+    if (isEmpty(trySetSet.value[currentTrying.value][i])) {
+      positionOccuredChange.value = ((currentTrying.value + 1) + "_" + (i + 1))
+      trySetSet.value[currentTrying.value][i] = {
+        suit: suit,
+        number: num,
+      }
+      break
+    }
+  }
 }
 
 const showHotKeys = () => {
@@ -98,6 +110,9 @@ const showHotKeys = () => {
         border: solid 1px #5d5d68;
         border-radius: 3px;
         cursor: pointer;
+        &.loaded {
+          border: none;
+        }
         img {
           width: 100%;
           height: 100%;
