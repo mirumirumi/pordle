@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { ref, toRef, watch } from "vue"
-import { Card } from "../../lib/defines"
+import { Card, Cards } from "../../lib/defines"
 import SvgIcon from "../parts/SvgIcon.vue"
 import validateHand from "../../lib/validate-hand"
 
@@ -21,7 +21,11 @@ const p = defineProps<{
   currentTrying: number,
   selfNumTry: number,
   positionOccuredChange: string,
-  cards: Array<Card>,
+  cards: Cards<Card>,
+}>()
+
+const emit = defineEmits<{
+  (e: "passValidate", cards: Cards<Card>): void,
 }>()
 
 const positionOccuredChange = toRef(p, "positionOccuredChange")
@@ -35,13 +39,19 @@ watch(positionOccuredChange, (_new: string) => {
   const numCard = parseInt(_new.replace(/^\d+_/, ""))
   isShowCard.value[numCard - 1] = true
 
-  if (isShowCard.value.every((e) => e)) {
+  if (isShowCard.value.every(e => e)) {
     isReadyValidate.value = true
   }
 })
 
 const validate = () => {
-  validateHand()
+  if (!validateHand()) {
+    1
+    return
+  }
+
+  emit("passValidate", p.cards)
+
 }
 
 

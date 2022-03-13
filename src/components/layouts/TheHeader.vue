@@ -14,7 +14,7 @@
         </div>
         <div class="royal" @click="showRoyal">
           <SvgIcon icon="royal" color="#e4e4e4" />
-          <div v-if="isNotShowedRoyal" class="red_circle"></div>
+          <div v-if="isNotShownRoyal" class="red_circle"></div>
         </div>
       </div>
     </header>
@@ -26,11 +26,11 @@ import { ref } from 'vue'
 import { toBool } from '@/lib/utils'
 import SvgIcon from '../parts/SvgIcon.vue'
 
-const isNotShowedRoyal = ref(toBool(localStorage.getItem("isNotShowedRoyal") ?? "true"))
+const isNotShownRoyal = ref(toBool(localStorage.getItem("isNotShownRoyal") ?? "true"))
 
 const showRoyal = () => {
-  isNotShowedRoyal.value = false
-  localStorage.setItem("isNotShowedRoyal", "false")
+  isNotShownRoyal.value = false
+  localStorage.setItem("isNotShownRoyal", "false")
 }
 </script>
 

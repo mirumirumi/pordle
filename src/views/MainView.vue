@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div id="field">
-      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" :key="index" />
+      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" @passValidate="receiveValiatedCards"  :key="index" />
     </div>
     <div id="deck">
       <transition name="fade">
@@ -24,6 +24,7 @@
 import { ref } from "vue"
 import { isEmpty } from "../lib/utils"
 import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
+import localForage from "localforage"
 import TrySetVue from "../components/modules/TrySet.vue"
 import LoadCards from "../components/parts/LoadCards.vue"
 
@@ -94,6 +95,18 @@ const chooseCard = (suit: Suit, num: Num) => {
   }
   setCardStyles(suit, num)
 }
+
+const receiveValiatedCards = async (cards: Cards<Card>) => {
+  const now = await localForage.getItem("cards") as any  // eslint-disable-line
+
+  if (!now)
+    await localForage.setItem("cards", now.concat(cards))
+  else
+    await localForage.setItem("cards", cards)
+}
+
+
+
 
 const showHotKeys = () => {
   1
