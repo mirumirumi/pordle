@@ -4,6 +4,9 @@
       <transition name="gyun">
         <img v-if="isShowCard[index]" :src="`cards/` + card.number + `_of_` + card.suit + `s.svg`" alt="🃏">
       </transition>
+      <div v-if="index === 4 && isReadyValidate" class="go_validate" @click="validate">
+        <SvgIcon icon="go" color="#5d5d68" />
+      </div>
     </div>
   </div>
 </template>
@@ -11,6 +14,8 @@
 <script setup lang="ts">
 import { ref, toRef, watch } from "vue"
 import { Card } from "../../lib/defines"
+import SvgIcon from "../parts/SvgIcon.vue"
+import validateHand from "../../lib/validate-hand"
 
 const p = defineProps<{
   currentTrying: number,
@@ -21,18 +26,23 @@ const p = defineProps<{
 
 const positionOccuredChange = toRef(p, "positionOccuredChange")
 const isShowCard = ref<Array<boolean>>(Array(5).fill(false))
+const isReadyValidate = ref(false)
 
 watch(positionOccuredChange, (_new: string) => {
-  const numCard = parseInt(_new.replace(/^\d+_/, ""))
-
   if (p.currentTrying !== p.selfNumTry)
     return
 
+  const numCard = parseInt(_new.replace(/^\d+_/, ""))
   isShowCard.value[numCard - 1] = true
+
+  if (isShowCard.value.every((e) => e)) {
+    isReadyValidate.value = true
+  }
 })
 
-
-
+const validate = () => {
+  validateHand()
+}
 
 
 </script>
@@ -42,6 +52,7 @@ watch(positionOccuredChange, (_new: string) => {
   height: 16.666%;
   padding: 3px 0;
   .input_box {
+    position: relative;
     display: inline-block;
     width: auto;
     height: 100%;
@@ -56,6 +67,25 @@ watch(positionOccuredChange, (_new: string) => {
       width: 100%;
       height: 100%;
       filter: saturate(0.7);
+    }
+  }
+  .go_validate {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -23px;
+    cursor: pointer;
+    svg {
+      width: 1.5em;
+    }
+  }
+}
+</style>
+<style lang="scss">
+.go_validate:hover {
+  svg {
+    path {
+      fill: #207f20;
     }
   }
 }

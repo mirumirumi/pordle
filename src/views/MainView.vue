@@ -10,7 +10,7 @@
         </div>
       </transition>
       <div v-for="suit in SUITS" class="suit" :key="suit">
-        <div v-for="num in NUMS" class="card" :class="{ 'loaded': isNotLoading }" @click="chooseCard(suit, num)" :key="num">
+        <div v-for="num in NUMS" class="card" :class="{ 'loaded': isNotLoading }" :id="suit + `_` + num" @click="chooseCard(suit, num)" :key="num">
           <transition name="fade">
             <img v-show="isNotLoading" :src="`cards/` + num + `_of_` + suit + `s.svg`" alt="🃏" @load="loaded">
           </transition>
@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { isEmpty } from "../lib/utils"
-import { Suit, Num, Card, Cards, TrySet } from "../lib/defines"
+import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
 import TrySetVue from "../components/modules/TrySet.vue"
 import LoadCards from "../components/parts/LoadCards.vue"
 
@@ -49,22 +49,78 @@ const trySetSet = ref<TrySet<Cards<Card>>>([
   [{}, {}, {}, {}, {}],
   [{}, {}, {}, {}, {}],
 ])
+const cardsStatus = ref<Array<Array<Status>>>([
+  Array(13),
+  Array(13),
+  Array(13),
+  Array(13),
+])
 
 const chooseCard = (suit: Suit, num: Num) => {
+  // do not do anything if the card has already been used
+  if (suit === "spade")
+    if (cardsStatus.value[0][num - 1] === "used")
+       return
+  if (suit === "heart")
+    if (cardsStatus.value[1][num - 1] === "used")
+      return
+  if (suit === "diamond")
+    if (cardsStatus.value[2][num - 1] === "used")
+      return
+  if (suit === "club")
+    if (cardsStatus.value[3][num - 1] === "used")
+      return
+
   for(let i = 0; i < trySetSet.value[currentTrying.value].length; i++) {
     if (isEmpty(trySetSet.value[currentTrying.value][i])) {
       positionOccuredChange.value = ((currentTrying.value + 1) + "_" + (i + 1))
+      
       trySetSet.value[currentTrying.value][i] = {
         suit: suit,
         number: num,
       }
+
+      if (suit === "spade")
+        cardsStatus.value[0][num - 1] = "used"
+      if (suit === "heart")
+        cardsStatus.value[1][num - 1] = "used"
+      if (suit === "diamond")
+        cardsStatus.value[2][num - 1] = "used"
+      if (suit === "club")
+        cardsStatus.value[3][num - 1] = "used"
+
       break
     }
   }
+  setCardStyles(suit, num)
 }
 
 const showHotKeys = () => {
   1
+}
+
+function setCardStyles(suit: Suit, num: Num): void {
+  let suitNum = 0
+  if (suit === "spade")
+    suitNum = 0
+  if (suit === "heart")
+    suitNum = 1
+  if (suit === "diamond")
+    suitNum = 2
+  if (suit === "club")
+    suitNum = 3
+
+  ;(document.getElementById(suit + "_" + num) as HTMLDivElement).classList.add("has_status")
+
+  if (cardsStatus.value[suitNum][num - 1] === "hit") {
+    ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.add("hit")
+  }
+  if (cardsStatus.value[suitNum][num - 1] === "blow") {
+    ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.add("blow")
+  }
+  if (cardsStatus.value[suitNum][num - 1] === "failure" || cardsStatus.value[suitNum][num - 1] === "used") {
+    ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.add("used")
+  }
 }
 </script>
 
@@ -123,6 +179,22 @@ const showHotKeys = () => {
         }
       }
     }
+  }
+}
+.has_status {
+  opacity: 0.444;
+  cursor: auto !important;
+  img:hover {
+    opacity: 1 !important;
+  }
+  img.hit {
+    background-color: #00ad33;
+  }
+  img.blow {
+    background-color: #dca900;
+  }
+  img.failure, img.used {
+    background-color: #000000;
   }
 }
 </style>
