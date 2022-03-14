@@ -45,16 +45,15 @@ watch(positionOccuredChange, (_new: string) => {
 })
 
 const validate = () => {
-  if (!validateHand()) {
-    1
+  if (!validateHand(p.cards)) {
+    console.log("ダメです")
     return
   }
+  console.log("OKです")
 
   emit("passValidate", p.cards)
 
 }
-
-
 </script>
 
 <style lang="scss" scoped>

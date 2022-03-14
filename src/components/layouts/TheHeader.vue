@@ -14,7 +14,7 @@
         </div>
         <div class="royal" @click="showRoyal">
           <SvgIcon icon="royal" color="#e4e4e4" />
-          <div v-if="isNotShownRoyal" class="red_circle"></div>
+          <div v-if="isNotShownStraightFlush" class="red_circle"></div>
         </div>
       </div>
     </header>
@@ -26,11 +26,11 @@ import { ref } from 'vue'
 import { toBool } from '@/lib/utils'
 import SvgIcon from '../parts/SvgIcon.vue'
 
-const isNotShownRoyal = ref(toBool(localStorage.getItem("isNotShownRoyal") ?? "true"))
+const isNotShownStraightFlush = ref(toBool(localStorage.getItem("isNotShownStraightFlush") ?? "true"))
 
 const showRoyal = () => {
-  isNotShownRoyal.value = false
-  localStorage.setItem("isNotShownRoyal", "false")
+  isNotShownStraightFlush.value = false
+  localStorage.setItem("isNotShownStraightFlush", "false")
 }
 </script>
 

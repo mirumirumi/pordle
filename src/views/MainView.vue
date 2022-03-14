@@ -24,6 +24,7 @@
 import { ref } from "vue"
 import { isEmpty } from "../lib/utils"
 import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
+import _ from "lodash"
 import localForage from "localforage"
 import TrySetVue from "../components/modules/TrySet.vue"
 import LoadCards from "../components/parts/LoadCards.vue"
