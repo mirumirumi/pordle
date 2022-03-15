@@ -25,21 +25,25 @@ const p = defineProps<{
   selfNumTry: number,
   positionOccuredChange: string,
   cards: Cards<Card>,
+  eventkicker: number,
 }>()
 
 const emit = defineEmits<{
   (e: "passValidate", result: boolean): void,
+  (e: "backspace"): void,
 }>()
 
+const eventkicker = toRef(p, "eventkicker")
 const positionOccuredChange = toRef(p, "positionOccuredChange")
 const isShowCard = ref<Array<boolean>>(Array(5).fill(false))
 const isReadyValidate = ref(false)
 
-watch(positionOccuredChange, (_new: string) => {
+watch(eventkicker, () => {
+  // only process the corresponding TrySet
   if (p.currentTrying !== p.selfNumTry)
     return
-
-  const numCard = parseInt(_new.replace(/^\d+_/, ""))
+  
+  const numCard = parseInt(positionOccuredChange.value.replace(/^\d+_/, ""))
   isShowCard.value[numCard - 1] = true
 
   if (isShowCard.value.every(e => e)) {
@@ -52,20 +56,23 @@ const validateFailed = ref(false)
 const validate = () => {
   if (!validateHand(p.cards)) {
     emit("passValidate", false)
+
     validateFailed.value = true
     setTimeout(() => validateFailed.value = false, 500)
+
     return
   }
-
-  console.log("OKです")
-
   emit("passValidate", true)
-
-
 }
 
 const backspace = () => {
-  1
+  const numCard = parseInt(positionOccuredChange.value.replace(/^\d+_/, ""))
+  isShowCard.value[numCard - 1] = false
+
+  if (!isShowCard.value.every(e => e)) 
+    isReadyValidate.value = false
+
+  emit("backspace")
 }
 </script>
 

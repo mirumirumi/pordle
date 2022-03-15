@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div id="field">
-      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" @passValidate="receiveValidateResult"  :key="index" />
+      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" :eventkicker="eventkicker" @passValidate="receiveValidateResult" @backspace="backspace" :key="index" />
     </div>
     <div id="deck">
       <transition name="fade">
@@ -33,6 +33,7 @@ const SUITS: Array<Suit> = ["spade", "heart", "diamond", "club"]
 const NUMS:  Array<Num> =  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 const currentTrying = ref(0)
 const positionOccuredChange = ref("0_0")
+const eventkicker = ref(0)
 
 const isNotLoading = ref(false)
 let numLoadedImages = 0
@@ -74,13 +75,15 @@ const chooseCard = (suit: Suit, num: Num) => {
       return
 
   for(let i = 0; i < trySetSet.value[currentTrying.value].length; i++) {
-    if (isEmpty(trySetSet.value[currentTrying.value][i])) {
+    if (isEmpty(trySetSet.value[currentTrying.value][i])) {      
       positionOccuredChange.value = ((currentTrying.value + 1) + "_" + (i + 1))
-      
+
       trySetSet.value[currentTrying.value][i] = {
         suit: suit,
         number: num,
       }
+
+      eventkicker.value++
 
       if (suit === "spade")
         cardsStatus.value[0][num - 1] = "used"
@@ -113,6 +116,11 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
 
   // check is_success!
 
+}
+
+const backspace = () => {
+  positionOccuredChange.value = (currentTrying.value + 1) + "_" + (parseInt(positionOccuredChange.value.replace(/^\d+_/, "")) - 1).toString()
+  trySetSet.value[currentTrying.value][(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))] = {}
 }
 
 const showHotKeys = () => {
