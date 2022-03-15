@@ -102,7 +102,7 @@ const backspace = () => {
     }
   }
   &.failed {
-    animation: failed 0.23s;
+    animation: failed 0.29s;
   }
   .backspace {
     right: -23px;
@@ -120,14 +120,17 @@ const backspace = () => {
   0% {
     transform: translateX(-1.5px);
   }
-  25% {
+  20% {
     transform: translateX(3.5px);
   }
-  50% {
+  40% {
     transform: translateX(-3.5px);
   }
-  75% {
-    transform: translateX(1.5px);
+  60% {
+    transform: translateX(3.5px);
+  }
+  80% {
+    transform: translateX(-1.5px);
   }
   100% {
     transform: translateX(0px);
