@@ -1,5 +1,5 @@
 <template>
-  <div class="try_set">
+  <div class="try_set" :class="{ 'failed': validateFailed }">
     <div v-for="card, index in cards" class="input_box" :class="{ 'loaded': isShowCard[index] }" :id="currentTrying + `_` + (index + 1)" :key="index">
       <transition name="gyun">
         <img v-if="isShowCard[index]" :src="`cards/` + card.number + `_of_` + card.suit + `s.svg`" alt="🃏">
@@ -47,13 +47,18 @@ watch(positionOccuredChange, (_new: string) => {
   }
 })
 
+const validateFailed = ref(false)
+
 const validate = () => {
   if (!validateHand(p.cards)) {
-    console.log("ダメです")
     emit("passValidate", false)
+    validateFailed.value = true
+    setTimeout(() => validateFailed.value = false, 500)
     return
   }
+
   console.log("OKです")
+
   emit("passValidate", true)
 
 
@@ -96,6 +101,9 @@ const backspace = () => {
       width: 1.5em;
     }
   }
+  &.failed {
+    animation: failed 0.23s;
+  }
   .backspace {
     right: -23px;
   }
@@ -108,6 +116,23 @@ const backspace = () => {
 }
 </style>
 <style lang="scss">
+@keyframes failed {
+  0% {
+    transform: translateX(-1.5px);
+  }
+  25% {
+    transform: translateX(3.5px);
+  }
+  50% {
+    transform: translateX(-3.5px);
+  }
+  75% {
+    transform: translateX(1.5px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
 .backspace:hover {
   svg {
     path {
