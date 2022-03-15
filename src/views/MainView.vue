@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div id="field">
-      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" @passValidate="receiveValiatedCards"  :key="index" />
+      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" @passValidate="receiveValidateResult"  :key="index" />
     </div>
     <div id="deck">
       <transition name="fade">
@@ -97,17 +97,23 @@ const chooseCard = (suit: Suit, num: Num) => {
   setCardStyles(suit, num)
 }
 
-const receiveValiatedCards = async (cards: Cards<Card>) => {
-  const now = await localForage.getItem("cards") as any  // eslint-disable-line
+const receiveValidateResult = async (result: boolean): Promise<void> => {
+  if (!result)
+    return
 
-  if (!now)
-    await localForage.setItem("cards", now.concat(cards))
-  else
-    await localForage.setItem("cards", cards)
+  // save tried data
+  const now = await localForage.getItem("cards") as Array<Cards<Card>>
+  if (now) {
+    const added = _.cloneDeep(now)
+    added.push(_.cloneDeep(trySetSet.value[currentTrying.value]))
+    await localForage.setItem("cards", added)
+  } else {  // at 1st time
+    await localForage.setItem("cards", [_.cloneDeep(trySetSet.value[currentTrying.value])])
+  }
+
+  // check is_success!
+
 }
-
-
-
 
 const showHotKeys = () => {
   1

@@ -4,7 +4,10 @@
       <transition name="gyun">
         <img v-if="isShowCard[index]" :src="`cards/` + card.number + `_of_` + card.suit + `s.svg`" alt="🃏">
       </transition>
-      <div v-if="index === 4 && isReadyValidate" class="go_validate" @click="validate">
+      <div v-if="index === 4 && (cards[0].suit && cards[0].number)" class="card_buttons backspace" @click="backspace">
+        <SvgIcon icon="backspace" color="#5d5d68" />
+      </div>
+      <div v-if="index === 4 && isReadyValidate" class="card_buttons go_validate" @click="validate">
         <SvgIcon icon="go" color="#5d5d68" />
       </div>
     </div>
@@ -25,7 +28,7 @@ const p = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: "passValidate", cards: Cards<Card>): void,
+  (e: "passValidate", result: boolean): void,
 }>()
 
 const positionOccuredChange = toRef(p, "positionOccuredChange")
@@ -47,12 +50,17 @@ watch(positionOccuredChange, (_new: string) => {
 const validate = () => {
   if (!validateHand(p.cards)) {
     console.log("ダメです")
+    emit("passValidate", false)
     return
   }
   console.log("OKです")
+  emit("passValidate", true)
 
-  emit("passValidate", p.cards)
 
+}
+
+const backspace = () => {
+  1
 }
 </script>
 
@@ -78,7 +86,7 @@ const validate = () => {
       filter: saturate(0.7);
     }
   }
-  .go_validate {
+  .card_buttons {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -88,9 +96,25 @@ const validate = () => {
       width: 1.5em;
     }
   }
+  .backspace {
+    right: -23px;
+  }
+  .loaded .backspace {
+    right: calc(-23px + 1.7px);  // border 1.7px (why not 1.7*2?)
+  }
+  .go_validate {
+    right: calc(-23px - 2.9em);
+  }
 }
 </style>
 <style lang="scss">
+.backspace:hover {
+  svg {
+    path {
+      fill: #af5a5a;
+    }
+  }
+}
 .go_validate:hover {
   svg {
     path {
