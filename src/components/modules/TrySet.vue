@@ -30,7 +30,7 @@ const p = defineProps<{
 
 const emit = defineEmits<{
   (e: "passValidate", result: boolean): void,
-  (e: "backspace"): void,
+  (e: "backspace", card: Card): void,
 }>()
 
 const eventkicker = toRef(p, "eventkicker")
@@ -42,7 +42,7 @@ watch(eventkicker, () => {
   // only process the corresponding TrySet
   if (p.currentTrying !== p.selfNumTry)
     return
-  
+
   const numCard = parseInt(positionOccuredChange.value.replace(/^\d+_/, ""))
   isShowCard.value[numCard - 1] = true
 
@@ -72,7 +72,7 @@ const backspace = () => {
   if (!isShowCard.value.every(e => e)) 
     isReadyValidate.value = false
 
-  emit("backspace")
+  emit("backspace", p.cards[numCard - 1])
 }
 </script>
 

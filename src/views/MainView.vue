@@ -58,6 +58,7 @@ const cardsStatus = ref<Array<Array<Status>>>([
   Array(13),
   Array(13),
 ])
+// const lastStatusChangedCard = ref([0, 0])
 
 const chooseCard = (suit: Suit, num: Num) => {
   // do not do anything if the card has already been used
@@ -85,14 +86,23 @@ const chooseCard = (suit: Suit, num: Num) => {
 
       eventkicker.value++
 
-      if (suit === "spade")
+      if (suit === "spade") {
         cardsStatus.value[0][num - 1] = "used"
-      if (suit === "heart")
+        // lastStatusChangedCard.value[0] = 0
+      }
+      if (suit === "heart") {
         cardsStatus.value[1][num - 1] = "used"
-      if (suit === "diamond")
+        // lastStatusChangedCard.value[0] = 1
+      }
+      if (suit === "diamond") {
         cardsStatus.value[2][num - 1] = "used"
-      if (suit === "club")
+        // lastStatusChangedCard.value[0] = 2
+      }
+      if (suit === "club") {
         cardsStatus.value[3][num - 1] = "used"
+        // lastStatusChangedCard.value[0] = 3
+      }
+      // lastStatusChangedCard.value[1] = num - 1
 
       break
     }
@@ -118,9 +128,21 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
 
 }
 
-const backspace = () => {
+const backspace = (card: Card) => {
   positionOccuredChange.value = (currentTrying.value + 1) + "_" + (parseInt(positionOccuredChange.value.replace(/^\d+_/, "")) - 1).toString()
   trySetSet.value[currentTrying.value][(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))] = {}
+
+  let suitNum = 0
+  if (card.suit === "spade")
+    suitNum = 0
+  if (card.suit === "heart")
+    suitNum = 1
+  if (card.suit === "diamond")
+    suitNum = 2
+  if (card.suit === "club")
+    suitNum = 3
+  cardsStatus.value[suitNum][card.number! - 1] = undefined
+  removeCardStyles(card.suit!, card.number!)
 }
 
 const showHotKeys = () => {
@@ -137,7 +159,7 @@ function setCardStyles(suit: Suit, num: Num): void {
     suitNum = 2
   if (suit === "club")
     suitNum = 3
-
+  
   ;(document.getElementById(suit + "_" + num) as HTMLDivElement).classList.add("has_status")
 
   if (cardsStatus.value[suitNum][num - 1] === "hit") {
@@ -149,6 +171,14 @@ function setCardStyles(suit: Suit, num: Num): void {
   if (cardsStatus.value[suitNum][num - 1] === "failure" || cardsStatus.value[suitNum][num - 1] === "used") {
     ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.add("used")
   }
+}
+
+function removeCardStyles(suit: Suit, num: Num): void {
+   (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.remove("has_status");
+  ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.remove("hit");
+  ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.remove("blow");
+  ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.remove("failure");
+  ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.remove("used");
 }
 </script>
 
