@@ -58,7 +58,6 @@ const cardsStatus = ref<Array<Array<Status>>>([
   Array(13),
   Array(13),
 ])
-// const lastStatusChangedCard = ref([0, 0])
 
 const chooseCard = (suit: Suit, num: Num) => {
   // do not do anything if the card has already been used
@@ -75,7 +74,11 @@ const chooseCard = (suit: Suit, num: Num) => {
     if (cardsStatus.value[3][num - 1] === "used")
       return
 
-  for(let i = 0; i < trySetSet.value[currentTrying.value].length; i++) {
+  // quit if the current trying set has already 5 cards
+  if (trySetSet.value[currentTrying.value].every(e => !isEmpty(e)))
+    return
+
+  for (let i = 0; i < trySetSet.value[currentTrying.value].length; i++) {
     if (isEmpty(trySetSet.value[currentTrying.value][i])) {      
       positionOccuredChange.value = ((currentTrying.value + 1) + "_" + (i + 1))
 
@@ -88,21 +91,16 @@ const chooseCard = (suit: Suit, num: Num) => {
 
       if (suit === "spade") {
         cardsStatus.value[0][num - 1] = "used"
-        // lastStatusChangedCard.value[0] = 0
       }
       if (suit === "heart") {
         cardsStatus.value[1][num - 1] = "used"
-        // lastStatusChangedCard.value[0] = 1
       }
       if (suit === "diamond") {
         cardsStatus.value[2][num - 1] = "used"
-        // lastStatusChangedCard.value[0] = 2
       }
       if (suit === "club") {
         cardsStatus.value[3][num - 1] = "used"
-        // lastStatusChangedCard.value[0] = 3
       }
-      // lastStatusChangedCard.value[1] = num - 1
 
       break
     }
