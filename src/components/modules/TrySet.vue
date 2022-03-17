@@ -4,7 +4,7 @@
       <transition name="gyun">
         <img v-if="isShowCard[index]" :src="`cards/` + card.number + `_of_` + card.suit + `s.svg`" alt="🃏">
       </transition>
-      <div v-if="index === 4 && (cards[0].suit && cards[0].number)" class="card_buttons backspace" @click="backspace">
+      <div v-if="index === 4 && (cards[0].suit && cards[0].number)" class="card_buttons backspace" @click="backspace()">
         <SvgIcon icon="backspace" color="#5d5d68" />
       </div>
       <div v-if="index === 4 && isReadyValidate" class="card_buttons go_validate" @click="validate">
@@ -17,6 +17,7 @@
 <script setup lang="ts">
 import { ref, toRef, watch } from "vue"
 import { Card, Cards } from "../../lib/defines"
+import { isEmpty } from "../../lib/utils"
 import SvgIcon from "../parts/SvgIcon.vue"
 import validateHand from "../../lib/validate-hand"
 
@@ -65,15 +66,28 @@ const validate = () => {
   emit("passValidate", true)
 }
 
-const backspace = () => {
-  const numCard = parseInt(positionOccuredChange.value.replace(/^\d+_/, ""))
+const backspace = (argNumCard = -1) => {
+  let numCard
+
+  // in keydown backspace from parent component event
+  if (argNumCard !== -1) {
+    numCard = argNumCard
+  } else {
+    numCard = parseInt(positionOccuredChange.value.replace(/^\d+_/, ""))
+  }
   isShowCard.value[numCard - 1] = false
 
   if (!isShowCard.value.every(e => e)) 
     isReadyValidate.value = false
 
+  console.log(p.cards)
+  console.log(p.cards[numCard - 1])
   emit("backspace", p.cards[numCard - 1])
 }
+
+defineExpose({
+  backspace,
+})
 </script>
 
 <style lang="scss" scoped>

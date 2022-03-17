@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div id="field">
-      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" :eventkicker="eventkicker" @passValidate="receiveValidateResult" @backspace="backspace" :key="index" />
+      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" :eventkicker="eventkicker" @passValidate="receiveValidateResult" @backspace="backspace" :key="index" :ref="'TrySet_' + (index + 1)" />
     </div>
     <div id="deck">
       <transition name="fade">
@@ -146,6 +146,29 @@ const backspace = (card: Card) => {
 const showHotKeys = () => {
   1
 }
+
+const TrySet_1 = ref()
+const TrySet_2 = ref()
+const TrySet_3 = ref()
+const TrySet_4 = ref()
+const TrySet_5 = ref()
+
+document.addEventListener("keydown", (e: KeyboardEvent) => {
+  if (e.key === "Backspace") {
+    e.preventDefault()
+    if (currentTrying.value === 0)
+      TrySet_1.value.backspace(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))
+    if (currentTrying.value === 1)
+      TrySet_2.value.backspace(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))
+    if (currentTrying.value === 2)
+      TrySet_3.value.backspace(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))
+    if (currentTrying.value === 3)
+      TrySet_4.value.backspace(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))
+    if (currentTrying.value === 4)
+      TrySet_5.value.backspace(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))
+    return
+  }
+})
 
 function setCardStyles(suit: Suit, num: Num): void {
   let suitNum = 0
