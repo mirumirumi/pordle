@@ -107,7 +107,7 @@ const chooseCard = (suit: Suit, num: Num) => {
       break
     }
   }
-  setCardStyles(suit, num)
+  setCardStylesForDeck(suit, num)
 }
 
 const receiveValidateResult = async (result: boolean): Promise<void> => {
@@ -126,17 +126,40 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
 
   // compare with answer
   const compareResult = compareWithAnswer(trySetSet.value[currentTrying.value], generateAnswer())
-  console.log(compareResult)
 
-  setCardStylesForFiled(currentTrying.value + 1, compareResult)
+  await setCardStylesForField(currentTrying.value + 1, compareResult)
 
+  for (const suit of SUITS) {
+    for (let j = 0; j < NUMS.length; j++) {
+      for (let k = 0; k < 5; k++) {
+        if (trySetSet.value[currentTrying.value][k].suit === suit && trySetSet.value[currentTrying.value][k].number === j + 1) {
+          let suitNum = 0
+          if (suit === "spade")
+            suitNum = 0
+          if (suit === "heart")
+            suitNum = 1
+          if (suit === "diamond")
+            suitNum = 2
+          if (suit === "club")
+            suitNum = 3
+          cardsStatus.value[suitNum][j] = compareResult[k]
+        }
+      }
+    }
+  }
+  for (let i = 0; i < 5; i++) {
+    setCardStylesForDeck(trySetSet.value[currentTrying.value][i].suit as Suit, trySetSet.value[currentTrying.value][i].number as Num)
+  }
+
+  // game clear!
   if (compareResult.every(e => e === "hit")) {
-    1
+  
+
 
     return
   }
 
-  // go next try
+  // go next try...
   currentTrying.value++
 }
 
@@ -186,7 +209,7 @@ document.addEventListener("keydown", (e: KeyboardEvent) => {
   }
 })
 
-function setCardStyles(suit: Suit | string, num: Num): void {
+function setCardStylesForDeck(suit: Suit | string, num: Num): void {
   let suitNum = 0
   if (suit === "spade")
     suitNum = 0
@@ -198,9 +221,11 @@ function setCardStyles(suit: Suit | string, num: Num): void {
     suitNum = 3
   
   if (cardsStatus.value[suitNum][num - 1] === "hit") {
+    (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.remove("used");
     (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.add("hit")
   }
   if (cardsStatus.value[suitNum][num - 1] === "blow") {
+    (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.remove("used");
     (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.add("blow")
   }
   if (cardsStatus.value[suitNum][num - 1] === "failure" || cardsStatus.value[suitNum][num - 1] === "used") {
@@ -214,7 +239,7 @@ function removeCardStyles(suit: Suit, num: Num): void {
   }
 }
 
-async function setCardStylesForFiled(currentTrying: number, resultArray: Array<"hit" | "blow" | undefined>): Promise<void> {
+async function setCardStylesForField(currentTrying: number, resultArray: Array<Status>): Promise<void> {
   for (let i = 0; i < 5; i++) {
     (document.getElementById(currentTrying + "_" + (i + 1).toString()) as HTMLDivElement).classList.add("mekuru");
     await delay(222)
@@ -223,6 +248,9 @@ async function setCardStylesForFiled(currentTrying: number, resultArray: Array<"
     }
     if (resultArray[i] === "blow") {
       (document.getElementById(currentTrying + "_" + (i + 1).toString()) as HTMLDivElement).classList.add("blow");
+    }
+    if (resultArray[i] === "failure") {
+      (document.getElementById(currentTrying + "_" + (i + 1).toString()) as HTMLDivElement).classList.add("failure");
     }
     await delay(200)
   }
