@@ -22,10 +22,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { isEmpty } from "../lib/utils"
+import { delay, isEmpty } from "../lib/utils"
 import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
-import isSameCards from "../lib/is-same-cards"
 import generateAnswer from "../lib/generate-answer"
+import compareWithAnswer from "../lib/compare-with-answer"
 import _ from "lodash"
 import localForage from "localforage"
 import TrySetVue from "../components/modules/TrySet.vue"
@@ -125,11 +125,19 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
   }
 
   // compare with answer
-  if (isSameCards(trySetSet.value[currentTrying.value], generateAnswer())) {
-    console.log("同じです")
-  } else {
-    console.log("違います")
+  const compareResult = compareWithAnswer(trySetSet.value[currentTrying.value], generateAnswer())
+  console.log(compareResult)
+
+  setCardStylesForFiled(currentTrying.value + 1, compareResult)
+
+  if (compareResult.every(e => e === "hit")) {
+    1
+
+    return
   }
+
+  // go next try
+  currentTrying.value++
 }
 
   generateAnswer()
@@ -178,7 +186,7 @@ document.addEventListener("keydown", (e: KeyboardEvent) => {
   }
 })
 
-function setCardStyles(suit: Suit, num: Num): void {
+function setCardStyles(suit: Suit | string, num: Num): void {
   let suitNum = 0
   if (suit === "spade")
     suitNum = 0
@@ -189,25 +197,35 @@ function setCardStyles(suit: Suit, num: Num): void {
   if (suit === "club")
     suitNum = 3
   
-  ;(document.getElementById(suit + "_" + num) as HTMLDivElement).classList.add("has_status")
-
   if (cardsStatus.value[suitNum][num - 1] === "hit") {
-    ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.add("hit")
+    (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.add("hit")
   }
   if (cardsStatus.value[suitNum][num - 1] === "blow") {
-    ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.add("blow")
+    (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.add("blow")
   }
   if (cardsStatus.value[suitNum][num - 1] === "failure" || cardsStatus.value[suitNum][num - 1] === "used") {
-    ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.add("used")
+    (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.add("used")
   }
 }
 
 function removeCardStyles(suit: Suit, num: Num): void {
-   (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.remove("has_status");
-  ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.remove("hit");
-  ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.remove("blow");
-  ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.remove("failure");
-  ((document.getElementById(suit + "_" + num) as HTMLDivElement).firstChild as HTMLDivElement).classList.remove("used");
+  for (const className of ["has_status", "hit", "blow", "failure", "used"]) {
+    (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.remove(className)
+  }
+}
+
+async function setCardStylesForFiled(currentTrying: number, resultArray: Array<"hit" | "blow" | undefined>): Promise<void> {
+  for (let i = 0; i < 5; i++) {
+    (document.getElementById(currentTrying + "_" + (i + 1).toString()) as HTMLDivElement).classList.add("mekuru");
+    await delay(222)
+    if (resultArray[i] === "hit") {
+      (document.getElementById(currentTrying + "_" + (i + 1).toString()) as HTMLDivElement).classList.add("hit");
+    }
+    if (resultArray[i] === "blow") {
+      (document.getElementById(currentTrying + "_" + (i + 1).toString()) as HTMLDivElement).classList.add("blow");
+    }
+    await delay(200)
+  }
 }
 </script>
 
@@ -217,11 +235,13 @@ function removeCardStyles(suit: Suit, num: Num): void {
   max-width: 1000px;
   height: 100%;
   margin: auto;
+  text-align: center;
   > div {
     padding: 5px 0;
     text-align: center;
   }
   #field {
+    display: inline-block;
     height: 60%;
   }
   #deck {
@@ -268,20 +288,38 @@ function removeCardStyles(suit: Suit, num: Num): void {
     }
   }
 }
-.has_status {
-  opacity: 0.444;
+</style>
+<style lang="scss">
+.hit, .blow, .failure, .used {
   cursor: auto !important;
-  img:hover {
-    opacity: 1 !important;
+}
+.hit {
+  background-color: #00ad33;
+}
+.blow {
+  background-color: #dca900;
+}
+.failure, .used {
+  background-color: #000000;
+}
+.hit > img, .blow > img, .failure > img, .used > img {
+  opacity: 0.444;
+  &:hover {
+    opacity: 0.444 !important;
   }
-  img.hit {
-    background-color: #00ad33;
+}
+.mekuru {
+  animation: mekuru 0.444s cubic-bezier(.5,.24,.65,.92);
+}
+@keyframes mekuru {
+  0% {
+    transform: rotateY(0deg);
   }
-  img.blow {
-    background-color: #dca900;
+  50% {
+    transform: rotateY(90deg);
   }
-  img.failure, img.used {
-    background-color: #000000;
+  100% {
+    transform: rotateY(0deg);
   }
 }
 </style>

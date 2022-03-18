@@ -1,15 +1,15 @@
 <template>
   <div class="try_set" :class="{ 'failed': validateFailed }">
-    <div v-for="card, index in cards" class="input_box" :class="{ 'loaded': isShowCard[index] }" :id="currentTrying + `_` + (index + 1)" :key="index">
+    <div v-for="card, index in cards" class="input_box" :class="{ 'loaded': isShowCard[index] }" :id="selfNumTry + `_` + (index + 1)" :key="index">
       <transition name="gyun">
         <img v-if="isShowCard[index]" :src="`cards/` + card.number + `_of_` + card.suit + `s.svg`" alt="🃏">
       </transition>
-      <div v-if="index === 4 && (cards[0].suit && cards[0].number)" class="card_buttons backspace" @click="backspace()">
-        <SvgIcon icon="backspace" color="#5d5d68" />
-      </div>
-      <div v-if="index === 4 && isReadyValidate" class="card_buttons go_validate" @click="validate">
-        <SvgIcon icon="go" color="#5d5d68" />
-      </div>
+    </div>
+    <div v-if="cards[0].suit && cards[0].number" class="card_buttons backspace" @click="backspace()">
+      <SvgIcon icon="backspace" color="#5d5d68" />
+    </div>
+    <div v-if="isReadyValidate" class="card_buttons go_validate" @click="validate">
+      <SvgIcon icon="go" color="#5d5d68" />
     </div>
   </div>
 </template>
@@ -89,6 +89,7 @@ defineExpose({
 
 <style lang="scss" scoped>
 .try_set {
+  position: relative;
   height: 16.666%;
   padding: 3px 0;
   .input_box {
