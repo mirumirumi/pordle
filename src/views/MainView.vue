@@ -62,20 +62,6 @@ const cardsStatus = ref<Array<Array<Status>>>([
 ])
 
 const chooseCard = (suit: Suit, num: Num) => {
-  // do not do anything if the card has already been used
-  if (suit === "spade")
-    if (cardsStatus.value[0][num - 1] === "used")
-       return
-  if (suit === "heart")
-    if (cardsStatus.value[1][num - 1] === "used")
-      return
-  if (suit === "diamond")
-    if (cardsStatus.value[2][num - 1] === "used")
-      return
-  if (suit === "club")
-    if (cardsStatus.value[3][num - 1] === "used")
-      return
-
   // quit if the current trying set has already 5 cards
   if (trySetSet.value[currentTrying.value].every(e => !isEmpty(e)))
     return
@@ -107,7 +93,7 @@ const chooseCard = (suit: Suit, num: Num) => {
       break
     }
   }
-  setCardStylesForDeck(suit, num)
+  // setCardStylesForDeck(suit, num)
 }
 
 const receiveValidateResult = async (result: boolean): Promise<void> => {
@@ -301,6 +287,7 @@ async function setCardStylesForField(currentTrying: number, resultArray: Array<S
         border: solid 1px #5d5d68;
         border-radius: 3px;
         cursor: pointer;
+        transition: 0.23s all ease-out;
         &.loaded {
           border: none;
         }
@@ -318,9 +305,6 @@ async function setCardStylesForField(currentTrying: number, resultArray: Array<S
 }
 </style>
 <style lang="scss">
-.hit, .blow, .failure, .used {
-  cursor: auto !important;
-}
 .hit {
   background-color: #00ad33;
 }
@@ -333,7 +317,7 @@ async function setCardStylesForField(currentTrying: number, resultArray: Array<S
 .hit > img, .blow > img, .failure > img, .used > img {
   opacity: 0.444;
   &:hover {
-    opacity: 0.444 !important;
+    opacity: 0.333 !important;
   }
 }
 .mekuru {
