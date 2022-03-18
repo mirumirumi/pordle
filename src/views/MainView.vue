@@ -24,6 +24,7 @@
 import { ref } from "vue"
 import { isEmpty } from "../lib/utils"
 import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
+import isSameCards from "../lib/is-same-cards"
 import generateAnswer from "../lib/generate-answer"
 import _ from "lodash"
 import localForage from "localforage"
@@ -124,9 +125,13 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
   }
 
   // compare with answer
-      generateAnswer()
-
+  if (isSameCards(trySetSet.value[currentTrying.value], generateAnswer())) {
+    console.log("同じです")
+  } else {
+    console.log("違います")
+  }
 }
+
   generateAnswer()
 
 const backspace = (card: Card) => {
