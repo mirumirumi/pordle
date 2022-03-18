@@ -17,7 +17,6 @@
 <script setup lang="ts">
 import { ref, toRef, watch } from "vue"
 import { Card, Cards } from "../../lib/defines"
-import { isEmpty } from "../../lib/utils"
 import SvgIcon from "../parts/SvgIcon.vue"
 import validateHand from "../../lib/validate-hand"
 
@@ -80,8 +79,6 @@ const backspace = (argNumCard = -1) => {
   if (!isShowCard.value.every(e => e)) 
     isReadyValidate.value = false
 
-  console.log(p.cards)
-  console.log(p.cards[numCard - 1])
   emit("backspace", p.cards[numCard - 1])
 }
 
@@ -116,7 +113,7 @@ defineExpose({
     position: absolute;
     top: 0;
     bottom: 0;
-    right: -23px;
+    right: -25px;
     cursor: pointer;
     svg {
       width: 1.5em;
@@ -125,14 +122,11 @@ defineExpose({
   &.failed {
     animation: failed 0.29s;
   }
-  .backspace {
-    right: -23px;
-  }
   .loaded .backspace {
-    right: calc(-23px + 1.7px);  // border 1.7px (why not 1.7*2?)
+    right: calc(-25px + 1.7px);  // border 1.7px (why not 1.7*2?)
   }
   .go_validate {
-    right: calc(-23px - 2.9em);
+    right: calc(-25px - 2.7em);
   }
 }
 </style>

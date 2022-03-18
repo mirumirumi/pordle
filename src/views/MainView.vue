@@ -24,6 +24,7 @@
 import { ref } from "vue"
 import { isEmpty } from "../lib/utils"
 import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
+import generateAnswer from "../lib/generate-answer"
 import _ from "lodash"
 import localForage from "localforage"
 import TrySetVue from "../components/modules/TrySet.vue"
@@ -122,9 +123,11 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
     await localForage.setItem("cards", [_.cloneDeep(trySetSet.value[currentTrying.value])])
   }
 
-  // check is_success!
+  // compare with answer
+      generateAnswer()
 
 }
+  generateAnswer()
 
 const backspace = (card: Card) => {
   positionOccuredChange.value = (currentTrying.value + 1) + "_" + (parseInt(positionOccuredChange.value.replace(/^\d+_/, "")) - 1).toString()
