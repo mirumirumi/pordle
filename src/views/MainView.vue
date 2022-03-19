@@ -21,6 +21,18 @@
         </div>
       </div>
     </div>
+    <teleport to="body">
+      <transition name="fade">
+        <ModalBase v-if="isShowModalGameEnd" @closeModal="isShowModalGameEnd = false">
+          <template v-if="gameResult">
+  
+          </template>
+          <template v-else>
+            
+          </template>
+        </ModalBase>
+      </transition>
+    </teleport>
   </div>
 </template>
 
@@ -37,6 +49,7 @@ import localForage from "localforage"
 import KeyName from "@/components/parts/KeyName.vue"
 import TrySetVue from "../components/modules/TrySet.vue"
 import LoadCards from "../components/parts/LoadCards.vue"
+import ModalBase from "../components/modules/ModalBase.vue"
 
 const store = useStore()
 
@@ -78,8 +91,13 @@ const TrySet_2 = ref()
 const TrySet_3 = ref()
 const TrySet_4 = ref()
 const TrySet_5 = ref()
+const TrySet_6 = ref()
 
 const chooseCard = (suit: Suit, num: Num) => {
+  // quit if already tried 6 times
+  if (6 <= currentTrying.value)
+    return
+
   // quit if the current trying set has already 5 cards
   if (trySetSet.value[currentTrying.value].every(e => !isEmpty(e)))
     return
@@ -179,6 +197,10 @@ onMounted(async () => {
       TrySet_5.value.batchOpenCards()
       currentTrying.value++
     }
+    if (i + 1 === 6) {
+      TrySet_6.value.batchOpenCards()
+      currentTrying.value++
+    }
   }
 })
 
@@ -208,6 +230,7 @@ async function gameMaster(cards: Cards<Card>) {
 
   // clear a game!
   if (compareResult.every(e => e === "hit")) {
+    showModalGameEnd(true)
   
 
 
@@ -215,13 +238,18 @@ async function gameMaster(cards: Cards<Card>) {
   }
 
   // lose a geme...
-  if (currentTrying.value === 5) {
-
-
-
-
+  if (5 <= currentTrying.value) {
+    showModalGameEnd(false)
     return
   }
+}
+
+const isShowModalGameEnd = ref(false)
+const gameResult = ref(false)
+
+function showModalGameEnd(result: boolean): void {
+  gameResult.value = result
+  isShowModalGameEnd.value = true
 }
 
 const backspace = (card: Card) => {

@@ -21,10 +21,9 @@ const zIndex = ref(p.zIndex)
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: v-bind(zIndex);
   display: block;
-  cursor: default;
-  content: " ";
   background: transparent;
+  cursor: default;
+  z-index: v-bind(zIndex);
 }
 </style>
