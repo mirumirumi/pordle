@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div id="field">
-      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" :eventkicker="eventkicker" @passValidate="receiveValidateResult" @backspace="backspace" :key="index" />
+      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" :eventkicker="eventkicker" @passValidate="receiveValidateResult" @batchValidate="batchValidate" @backspace="backspace" :ref="`TrySet_` + (index + 1)" :key="index" />
     </div>
     <div id="deck">
       <transition name="fade">
@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { nextTick, onMounted, ref } from "vue"
 import { useStore } from "@/store/store"
 import { delay, isEmpty } from "../lib/utils"
 import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
@@ -71,6 +71,11 @@ const cardsStatus = ref<Array<Array<Status>>>([
   Array(13),
   Array(13),
 ])
+const TrySet_1 = ref()
+const TrySet_2 = ref()
+const TrySet_3 = ref()
+const TrySet_4 = ref()
+const TrySet_5 = ref()
 
 const chooseCard = (suit: Suit, num: Num) => {
   // quit if the current trying set has already 5 cards
@@ -114,8 +119,9 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
   if (!result)
     return
 
-  // save tried data
   const now = await localForage.getItem("cards") as Array<Cards<Card>>
+
+  // save tried data
   if (now) {
     const added = _.cloneDeep(now)
     added.push(_.cloneDeep(trySetSet.value[currentTrying.value]))
@@ -124,34 +130,71 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
     await localForage.setItem("cards", [_.cloneDeep(trySetSet.value[currentTrying.value])])
   }
 
+  await gameMaster(trySetSet.value[currentTrying.value])
+
+  // go next try...
+  currentTrying.value++
+}
+
+onMounted(async () => {
+  const savedCards = await localForage.getItem("cards") as Array<Cards<Card>>
+  
+  if (!savedCards)
+   return
+
+  for (let i = 0; i < savedCards.length; i++) {
+    trySetSet.value[i] = savedCards[i]
+
+    await nextTick()
+
+    if (i + 1 === 1) {
+      TrySet_1.value.batchOpenCards()
+      currentTrying.value++
+    }
+    if (i + 1 === 2) {
+      TrySet_2.value.batchOpenCards()
+      currentTrying.value++
+    }
+    if (i + 1 === 3) {
+      TrySet_3.value.batchOpenCards()
+      currentTrying.value++
+    }
+    if (i + 1 === 4) {
+      TrySet_4.value.batchOpenCards()
+      currentTrying.value++
+    }
+    if (i + 1 === 5) {
+      TrySet_5.value.batchOpenCards()
+      currentTrying.value++
+    }
+  }
+})
+
+const batchValidate = async (cards: Cards<Card>) => {
+  await gameMaster(cards)
+}
+
+async function gameMaster(cards: Cards<Card>) {
   // compare with answer
-  const compareResult = compareWithAnswer(trySetSet.value[currentTrying.value], generateAnswer())
+  const compareResult = compareWithAnswer(cards, generateAnswer())
 
   await setCardStylesForField(currentTrying.value + 1, compareResult)
 
   for (const suit of SUITS) {
     for (let j = 0; j < NUMS.length; j++) {
       for (let k = 0; k < 5; k++) {
-        if (trySetSet.value[currentTrying.value][k].suit === suit && trySetSet.value[currentTrying.value][k].number === j + 1) {
-          let suitNum = 0
-          if (suit === "spade")
-            suitNum = 0
-          if (suit === "heart")
-            suitNum = 1
-          if (suit === "diamond")
-            suitNum = 2
-          if (suit === "club")
-            suitNum = 3
+        if (cards[k].suit === suit && cards[k].number === j + 1) {
+          const suitNum = suitToNum(suit as Suit)
           cardsStatus.value[suitNum][j] = compareResult[k]
         }
       }
     }
   }
   for (let i = 0; i < 5; i++) {
-    setCardStylesForDeck(trySetSet.value[currentTrying.value][i].suit as Suit, trySetSet.value[currentTrying.value][i].number as Num)
+    setCardStylesForDeck(cards[i].suit as Suit, cards[i].number as Num)
   }
 
-  // game clear!
+  // clear a game!
   if (compareResult.every(e => e === "hit")) {
   
 
@@ -159,37 +202,27 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
     return
   }
 
-  // go next try...
-  currentTrying.value++
+  // lose a geme...
+  if (currentTrying.value === 5) {
+
+
+
+
+    return
+  }
 }
 
 const backspace = (card: Card) => {
   positionOccuredChange.value = (currentTrying.value + 1) + "_" + (parseInt(positionOccuredChange.value.replace(/^\d+_/, "")) - 1).toString()
   trySetSet.value[currentTrying.value][(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))] = {}
 
-  let suitNum = 0
-  if (card.suit === "spade")
-    suitNum = 0
-  if (card.suit === "heart")
-    suitNum = 1
-  if (card.suit === "diamond")
-    suitNum = 2
-  if (card.suit === "club")
-    suitNum = 3
+  const suitNum = suitToNum(card.suit as Suit)
   cardsStatus.value[suitNum][card.number! - 1] = undefined
   removeCardStyles(card.suit!, card.number!)
 }
 
 function setCardStylesForDeck(suit: Suit | string, num: Num): void {
-  let suitNum = 0
-  if (suit === "spade")
-    suitNum = 0
-  if (suit === "heart")
-    suitNum = 1
-  if (suit === "diamond")
-    suitNum = 2
-  if (suit === "club")
-    suitNum = 3
+  const suitNum = suitToNum(suit as Suit)
   
   if (cardsStatus.value[suitNum][num - 1] === "hit") {
     (document.getElementById(suit + "_" + num) as HTMLDivElement).classList.remove("used");
@@ -279,6 +312,19 @@ function resetChoosingStyle(): void {
     }
   }
 }
+
+function suitToNum(suit: Suit): number {
+  let suitNum = 0
+  if (suit === "spade")
+    suitNum = 0
+  if (suit === "heart")
+    suitNum = 1
+  if (suit === "diamond")
+    suitNum = 2
+  if (suit === "club")
+    suitNum = 3
+  return suitNum
+}
 </script>
 
 <style lang="scss" scoped>
@@ -334,6 +380,7 @@ function resetChoosingStyle(): void {
           width: 100%;
           height: 100%;
           filter: saturate(0.7);
+          transition: 0.23s all ease-out;
           &:hover {
             opacity: 0.777;            
           }

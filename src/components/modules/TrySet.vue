@@ -39,6 +39,7 @@ const p = defineProps<{
 const emit = defineEmits<{
   (e: "passValidate", result: boolean): void,
   (e: "backspace", card: Card): void,
+  (e: "batchValidate", cards: Cards<Card>): void,
 }>()
 
 const store = useStore()
@@ -60,6 +61,13 @@ watch(eventkicker, () => {
     isReadyValidate.value = true
   }
 })
+
+const batchOpenCards = () => {
+  for (let i = 0; i < 5; i++) {
+    isShowCard.value[i] = true
+  }
+  emit("batchValidate", p.cards)
+}
 
 const validateFailed = ref(false)
 
@@ -109,6 +117,10 @@ document.addEventListener("keydown", (e: KeyboardEvent) => {
 
     validate()
   }
+})
+
+defineExpose({
+  batchOpenCards,
 })
 </script>
 
