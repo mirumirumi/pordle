@@ -48,9 +48,11 @@ const currentTrying = ref(0)
 const positionOccuredChange = ref("0_0")
 const eventkicker = ref(0)
 
-const isNotLoading = ref(false)
-let numLoadedImages = 0
+const date = new Date()
+const today = date.getFullYear().toString() + date.getMonth().toString() + date.getDate().toString()
 
+let numLoadedImages = 0
+const isNotLoading = ref(false)
 const loaded = () => {
   numLoadedImages++
   if (numLoadedImages === 52)
@@ -130,6 +132,8 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
     await localForage.setItem("cards", [_.cloneDeep(trySetSet.value[currentTrying.value])])
   }
 
+  await localForage.setItem("date", today)
+
   await gameMaster(trySetSet.value[currentTrying.value])
 
   // go next try...
@@ -137,6 +141,14 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
 }
 
 onMounted(async () => {
+  // set & read date to check localForage's data is today
+  const userDate: string | null = await localForage.getItem("date")
+  if (userDate !== today) {
+    await localForage.removeItem("cards")
+    return
+  }
+
+  // load recent cards
   const savedCards = await localForage.getItem("cards") as Array<Cards<Card>>
   
   if (!savedCards)
