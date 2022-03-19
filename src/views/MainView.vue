@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div id="field">
-      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" :eventkicker="eventkicker" @passValidate="receiveValidateResult" @backspace="backspace" :key="index" :ref="'TrySet_' + (index + 1)" />
+      <TrySetVue v-for="trySet, index in trySetSet" :currentTrying="currentTrying + 1" :selfNumTry="index + 1" :positionOccuredChange="positionOccuredChange" :cards="trySet" :eventkicker="eventkicker" @passValidate="receiveValidateResult" @backspace="backspace" :key="index" />
     </div>
     <div id="deck">
       <transition name="fade">
@@ -93,7 +93,7 @@ const chooseCard = (suit: Suit, num: Num) => {
       break
     }
   }
-  // setCardStylesForDeck(suit, num)
+  // setCardStylesForDeck(suit, num)  // chooseable any card as many times until compare with answer & match the specification of the original Wordle
 }
 
 const receiveValidateResult = async (result: boolean): Promise<void> => {
@@ -149,8 +149,6 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
   currentTrying.value++
 }
 
-  generateAnswer()
-
 const backspace = (card: Card) => {
   positionOccuredChange.value = (currentTrying.value + 1) + "_" + (parseInt(positionOccuredChange.value.replace(/^\d+_/, "")) - 1).toString()
   trySetSet.value[currentTrying.value][(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))] = {}
@@ -167,33 +165,6 @@ const backspace = (card: Card) => {
   cardsStatus.value[suitNum][card.number! - 1] = undefined
   removeCardStyles(card.suit!, card.number!)
 }
-
-const showHotKeys = () => {
-  1
-}
-
-const TrySet_1 = ref()
-const TrySet_2 = ref()
-const TrySet_3 = ref()
-const TrySet_4 = ref()
-const TrySet_5 = ref()
-
-document.addEventListener("keydown", (e: KeyboardEvent) => {
-  if (e.key === "Backspace") {
-    e.preventDefault()
-    if (currentTrying.value === 0)
-      TrySet_1.value.backspace(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))
-    if (currentTrying.value === 1)
-      TrySet_2.value.backspace(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))
-    if (currentTrying.value === 2)
-      TrySet_3.value.backspace(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))
-    if (currentTrying.value === 3)
-      TrySet_4.value.backspace(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))
-    if (currentTrying.value === 4)
-      TrySet_5.value.backspace(parseInt(positionOccuredChange.value.replace(/^\d+_/, "")))
-    return
-  }
-})
 
 function setCardStylesForDeck(suit: Suit | string, num: Num): void {
   let suitNum = 0

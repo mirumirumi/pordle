@@ -73,15 +73,8 @@ const validate = () => {
   emit("passValidate", true)
 }
 
-const backspace = (argNumCard = -1) => {
-  let numCard
-
-  // in keydown backspace from parent component event
-  if (argNumCard !== -1) {
-    numCard = argNumCard
-  } else {
-    numCard = parseInt(positionOccuredChange.value.replace(/^\d+_/, ""))
-  }
+const backspace = () => {
+  const numCard = parseInt(positionOccuredChange.value.replace(/^\d+_/, ""))
   isShowCard.value[numCard - 1] = false
 
   if (!isShowCard.value.every(e => e)) 
@@ -90,8 +83,30 @@ const backspace = (argNumCard = -1) => {
   emit("backspace", p.cards[numCard - 1])
 }
 
-defineExpose({
-  backspace,
+document.addEventListener("keydown", (e: KeyboardEvent) => {
+  if (e.key === "Backspace") {
+    e.preventDefault()
+    
+    if (p.selfNumTry !== p.currentTrying)
+      return
+
+    if (!isShowCard.value.includes(true))
+      return
+
+    backspace()
+  }
+
+  if (e.key === "Enter") {
+    e.preventDefault()
+
+    if (p.selfNumTry !== p.currentTrying)
+      return
+
+    if (!isShowCard.value.every(e => e === true))
+      return
+
+    validate()
+  }
 })
 </script>
 
