@@ -9,8 +9,8 @@
         <div class="how_to_play" @click="showHowToPlay">
           <SvgIcon icon="how_to_play" color="#e4e4e4" />
         </div>
-        <div class="statitics" @click="showStatistics">
-          <SvgIcon icon="statistics" color="#e4e4e4" />
+        <div class="statitics" @click="showHotKeys">
+          <SvgIcon icon="keyboard" color="#e4e4e4" />
         </div>
         <div class="royal" @click="showRoyal">
           <SvgIcon icon="royal" color="#e4e4e4" />
@@ -37,12 +37,12 @@ const isNotShownStraightFlush = ref(toBool(localStorage.getItem("isNotShownStrai
 const isOpenBack = ref(false)
 
 const showHowToPlay = (): void => {
-  isOpenBack.value = true
-  store.isShownHotKeys = true
+  1
 }
 
-const showStatistics = (): void => {
-  1
+const showHotKeys = (): void => {
+  isOpenBack.value = true
+  store.isShownHotKeys = true
 }
 
 const showRoyal = () => {

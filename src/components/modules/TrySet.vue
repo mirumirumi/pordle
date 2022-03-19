@@ -13,8 +13,8 @@
     </div>
     <transition-group name="fade">
       <template v-if="store.isShownHotKeys && currentTrying === selfNumTry">
-        <KeyName keyName="Backspace" :isExistCard="isShowCard.includes(true)" style="right: -5px;" />
-        <KeyName keyName="Enter" :isExistCard="isShowCard.includes(true)" style="right: -100px;" />
+        <KeyName keyName="Backspace" :isExistCard="isShowCard.includes(true)" style="right: -5px;" key="A" />
+        <KeyName keyName="Enter" :isExistCard="isShowCard.includes(true)" style="right: -100px;" key="B" />
       </template>
     </transition-group>
   </div>

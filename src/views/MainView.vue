@@ -12,8 +12,8 @@
       <div v-for="suit, s in SUITS" class="suit" :key="suit">
         <div v-for="num, n in NUMS" class="card" :class="{ 'loaded': isNotLoading }" :id="suit + `_` + num" @click="chooseCard(suit, num)" :key="num">
           <transition-group name="fade">
-            <KeyName v-if="store.isShownHotKeys && n === 0" :keyName="KEY_NAMES_SUIT[s]" style="left: -35px;" />
-            <KeyName v-if="store.isShownHotKeys && s === 0" :keyName="KEY_NAMES_NUM[n]" style="top: -25px; bottom: auto; left: 25%;" />
+            <KeyName v-if="store.isShownHotKeys && n === 0" :keyName="KEY_NAMES_SUIT[s]" style="left: -35px;" :key="suit + num" />
+            <KeyName v-if="store.isShownHotKeys && s === 0" :keyName="KEY_NAMES_NUM[n]" style="top: -25px; bottom: auto; left: 25%;" :key="suit + num" />
           </transition-group>
           <transition name="fade">
             <img v-show="isNotLoading" :src="`cards/` + num + `_of_` + suit + `s.svg`" alt="🃏" @load="loaded">
@@ -105,6 +105,9 @@ const chooseCard = (suit: Suit, num: Num) => {
     }
   }
   // setCardStylesForDeck(suit, num)  // chooseable any card as many times until compare with answer & match the specification of the original Wordle
+
+  keyQueue.splice(0)
+  resetChoosingStyle()
 }
 
 const receiveValidateResult = async (result: boolean): Promise<void> => {
@@ -265,6 +268,14 @@ function setChoosingStyleForNumbers(suit: Suit, number: Num): void {
         (document.getElementById(suit + "_" + (i + 1).toString()) as HTMLDivElement).classList.remove("used");
         (document.getElementById(suit + "_" + (i + 1).toString()) as HTMLDivElement).classList.add("choose");
       }
+    }
+  }
+}
+
+function resetChoosingStyle(): void {
+  for (const suit of SUITS) {
+    for (let i = 0; i < 13; i++) {
+      (document.getElementById(suit + "_" + (i + 1).toString()) as HTMLDivElement).classList.remove("choose");
     }
   }
 }
