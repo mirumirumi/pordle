@@ -29,6 +29,7 @@ import { ref } from "vue"
 import { useStore } from "@/store/store"
 import { delay, isEmpty } from "../lib/utils"
 import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
+import keyQueueHelper from "../lib/key-queue"
 import generateAnswer from "../lib/generate-answer"
 import compareWithAnswer from "../lib/compare-with-answer"
 import _ from "lodash"
@@ -222,6 +223,51 @@ async function setCardStylesForField(currentTrying: number, resultArray: Array<S
     await delay(200)
   }
 }
+
+const keyQueue: Array<string> = []
+
+document.addEventListener("keydown", (e: KeyboardEvent) => {
+  keyQueue.push(e.key)
+
+  const { suit, number } = keyQueueHelper(keyQueue)
+  if (keyQueue.length === 2) {
+    if (suit && number) chooseCard(suit, number)
+    for (const suittt of SUITS) {
+      for (let i = 0; i < 13; i++) {
+        (document.getElementById(suittt + "_" + (i + 1).toString()) as HTMLDivElement).classList.remove("choose");
+      }
+    }
+    keyQueue.splice(0)
+    return
+  }
+
+  if (e.key === "s" || e.key === "h" || e.key === "d" || e.key === "c") {
+    e.preventDefault()
+    setChoosingStyleForSuits(suit as Suit)
+  }
+  if (e.key === "1" || e.key === "2" || e.key === "3" || e.key === "4" || e.key === "5" || e.key === "6" || e.key === "7" || e.key === "8" || e.key === "9" || e.key === "0" || e.key === "j" || e.key === "q" || e.key === "k") {
+    e.preventDefault()
+    setChoosingStyleForNumbers(suit as Suit, number as Num)
+  }
+})
+
+function setChoosingStyleForSuits(suit: Suit): void {
+  for (let i = 0; i < 13; i++) {
+    (document.getElementById(suit + "_" + (i + 1).toString()) as HTMLDivElement).classList.remove("used");
+    (document.getElementById(suit + "_" + (i + 1).toString()) as HTMLDivElement).classList.add("choose");
+  }
+}
+
+function setChoosingStyleForNumbers(suit: Suit, number: Num): void {
+  for (const suit of SUITS) {
+    for (let i = 0; i < 13; i++) {
+      if (i + 1 === number) {
+        (document.getElementById(suit + "_" + (i + 1).toString()) as HTMLDivElement).classList.remove("used");
+        (document.getElementById(suit + "_" + (i + 1).toString()) as HTMLDivElement).classList.add("choose");
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -296,7 +342,10 @@ async function setCardStylesForField(currentTrying: number, resultArray: Array<S
 .failure, .used {
   background-color: #000000;
 }
-.hit > img, .blow > img, .failure > img, .used > img {
+.choose {
+  background-color: #0099ff;
+}
+.hit > img, .blow > img, .failure > img, .used > img, .choose > img {
   opacity: 0.444;
   &:hover {
     opacity: 0.333 !important;
