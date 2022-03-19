@@ -11,13 +11,19 @@
     <div v-if="currentTrying === selfNumTry && isReadyValidate" class="card_buttons go_validate" @click="validate">
       <SvgIcon icon="go" color="#5d5d68" />
     </div>
+    <template v-if="currentTrying === selfNumTry && store.isShownHotKeys">
+      <KeyName keyName="Backspace" :isExistCard="isShowCard.includes(true)" style="right: -5px;" />
+      <KeyName keyName="Enter" :isExistCard="isShowCard.includes(true)" style="right: -100px;" />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, toRef, watch } from "vue"
 import { Card, Cards } from "../../lib/defines"
+import { useStore } from "@/store/store"
 import SvgIcon from "../parts/SvgIcon.vue"
+import KeyName from "../parts/KeyName.vue"
 import validateHand from "../../lib/validate-hand"
 
 const p = defineProps<{
@@ -32,6 +38,8 @@ const emit = defineEmits<{
   (e: "passValidate", result: boolean): void,
   (e: "backspace", card: Card): void,
 }>()
+
+const store = useStore()
 
 const eventkicker = toRef(p, "eventkicker")
 const positionOccuredChange = toRef(p, "positionOccuredChange")

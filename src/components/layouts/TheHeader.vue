@@ -6,11 +6,11 @@
         <span>Pordle</span>
       </div>
       <div class="menu">
-        <div class="how_to_play">
+        <div class="how_to_play" @click="showHowToPlay">
           <SvgIcon icon="how_to_play" color="#e4e4e4" />
         </div>
-        <div class="statitics">
-          <SvgIcon icon="statitics" color="#e4e4e4" />
+        <div class="statitics" @click="showStatistics">
+          <SvgIcon icon="statistics" color="#e4e4e4" />
         </div>
         <div class="royal" @click="showRoyal">
           <SvgIcon icon="royal" color="#e4e4e4" />
@@ -18,19 +18,41 @@
         </div>
       </div>
     </header>
+    <Teleport to="body">
+      <TransparentBack v-if="isOpenBack" @click="closeBack" />
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { toBool } from '@/lib/utils'
+import { useStore } from '@/store/store'
 import SvgIcon from '../parts/SvgIcon.vue'
+import TransparentBack from '../parts/TransparentBack.vue'
+
+const store = useStore()
 
 const isNotShownStraightFlush = ref(toBool(localStorage.getItem("isNotShownStraightFlush") ?? "true"))
+const isOpenBack = ref(false)
+
+const showHowToPlay = (): void => {
+  isOpenBack.value = true
+  store.isShownHotKeys = true
+}
+
+const showStatistics = (): void => {
+  1
+}
 
 const showRoyal = () => {
   isNotShownStraightFlush.value = false
   localStorage.setItem("isNotShownStraightFlush", "false")
+}
+
+const closeBack = () => {
+  isOpenBack.value = false
+  store.isShownHotKeys = false
 }
 </script>
 
