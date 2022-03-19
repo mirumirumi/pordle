@@ -5,16 +5,18 @@
         <img v-if="isShowCard[index]" :src="`cards/` + card.number + `_of_` + card.suit + `s.svg`" alt="🃏">
       </transition>
     </div>
-    <div v-if="currentTrying === selfNumTry && (cards[0].suit && cards[0].number)" class="card_buttons backspace" @click="backspace()">
+    <div v-if="(cards[0].suit && cards[0].number) && currentTrying === selfNumTry" class="card_buttons backspace" @click="backspace()">
       <SvgIcon icon="backspace" color="#5d5d68" />
     </div>
-    <div v-if="currentTrying === selfNumTry && isReadyValidate" class="card_buttons go_validate" @click="validate">
+    <div v-if="isReadyValidate && currentTrying === selfNumTry" class="card_buttons go_validate" @click="validate">
       <SvgIcon icon="go" color="#5d5d68" />
     </div>
-    <template v-if="currentTrying === selfNumTry && store.isShownHotKeys">
-      <KeyName keyName="Backspace" :isExistCard="isShowCard.includes(true)" style="right: -5px;" />
-      <KeyName keyName="Enter" :isExistCard="isShowCard.includes(true)" style="right: -100px;" />
-    </template>
+    <transition-group name="fade">
+      <template v-if="store.isShownHotKeys && currentTrying === selfNumTry">
+        <KeyName keyName="Backspace" :isExistCard="isShowCard.includes(true)" style="right: -5px;" />
+        <KeyName keyName="Enter" :isExistCard="isShowCard.includes(true)" style="right: -100px;" />
+      </template>
+    </transition-group>
   </div>
 </template>
 

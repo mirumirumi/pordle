@@ -9,7 +9,7 @@
 <script setup lang="ts">
 defineProps<{
   keyName: string,
-  isExistCard: boolean,
+  isExistCard?: boolean,
 }>()
 </script>
 
@@ -34,6 +34,7 @@ defineProps<{
     justify-content: center;
     height: 22.2px;
     padding: 0.05em 0.19em 0.09em;
+    background-color: #141422;
     border: solid 1.7px #5d5d68;
     border-radius: 4px;
     span {

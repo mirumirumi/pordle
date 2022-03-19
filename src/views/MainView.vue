@@ -9,8 +9,12 @@
           <LoadCards />
         </div>
       </transition>
-      <div v-for="suit in SUITS" class="suit" :key="suit">
-        <div v-for="num in NUMS" class="card" :class="{ 'loaded': isNotLoading }" :id="suit + `_` + num" @click="chooseCard(suit, num)" :key="num">
+      <div v-for="suit, s in SUITS" class="suit" :key="suit">
+        <div v-for="num, n in NUMS" class="card" :class="{ 'loaded': isNotLoading }" :id="suit + `_` + num" @click="chooseCard(suit, num)" :key="num">
+          <transition-group name="fade">
+            <KeyName v-if="store.isShownHotKeys && n === 0" :keyName="KEY_NAMES_SUIT[s]" style="left: -35px;" />
+            <KeyName v-if="store.isShownHotKeys && s === 0" :keyName="KEY_NAMES_NUM[n]" style="top: -25px; bottom: auto; left: 25%;" />
+          </transition-group>
           <transition name="fade">
             <img v-show="isNotLoading" :src="`cards/` + num + `_of_` + suit + `s.svg`" alt="🃏" @load="loaded">
           </transition>
@@ -22,17 +26,23 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
+import { useStore } from "@/store/store"
 import { delay, isEmpty } from "../lib/utils"
 import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
 import generateAnswer from "../lib/generate-answer"
 import compareWithAnswer from "../lib/compare-with-answer"
 import _ from "lodash"
 import localForage from "localforage"
+import KeyName from "@/components/parts/KeyName.vue"
 import TrySetVue from "../components/modules/TrySet.vue"
 import LoadCards from "../components/parts/LoadCards.vue"
 
+const store = useStore()
+
 const SUITS: Array<Suit> = ["spade", "heart", "diamond", "club"]
-const NUMS:  Array<Num> =  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+const NUMS:  Array<Num>  = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+const KEY_NAMES_SUIT = ["S", "H", "D", "C"]
+const KEY_NAMES_NUM  = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "J", "Q", "K"]
 const currentTrying = ref(0)
 const positionOccuredChange = ref("0_0")
 const eventkicker = ref(0)
@@ -250,6 +260,7 @@ async function setCardStylesForField(currentTrying: number, resultArray: Array<S
       display: flex;
       justify-content: center;
       .card {
+        position: relative;
         display: inline-block;
         width: auto;
         height: 100%;
