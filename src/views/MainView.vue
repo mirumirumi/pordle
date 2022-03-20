@@ -49,6 +49,7 @@ import { nextTick, onMounted, ref } from "vue"
 import { useStore } from "@/store/store"
 import { delay, isEmpty } from "../lib/utils"
 import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
+import party from "../lib/party"
 import keyQueueHelper from "../lib/key-queue"
 import generateAnswer from "../lib/generate-answer"
 import compareWithAnswer from "../lib/compare-with-answer"
@@ -253,9 +254,7 @@ async function gameMaster(cards: Cards<Card>, isBatch = false) {
   if (compareResult.every(e => e === "hit")) {
     graph.value = generateGraph()
     showModalGameEnd(true)
-  
-
-
+    party()
     return
   }
 

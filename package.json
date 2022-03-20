@@ -9,6 +9,7 @@
         "test:unit": "vue-cli-service test:unit"
     },
     "dependencies": {
+        "@types/canvas-confetti": "^1.4.2",
         "@types/jest": "^24.0.19",
         "@types/lodash": "^4.14.179",
         "@types/seedrandom": "^3.0.2",
@@ -25,6 +26,7 @@
         "@vue/eslint-config-typescript": "^7.0.0",
         "@vue/test-utils": "^2.0.0-0",
         "axios": "^0.24.0",
+        "canvas-confetti": "^1.5.1",
         "core-js": "^3.6.5",
         "eslint": "^6.7.2",
         "eslint-plugin-vue": "^7.0.0",
