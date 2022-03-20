@@ -7,6 +7,8 @@ not_used/
 *.md
 !README.md
 
+!.env.*
+
 # ----------------------------------- #
 
 # local env files
