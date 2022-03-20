@@ -1,7 +1,6 @@
 <template>
-  <div class="modal_base">
-    <slot>
-    </slot>
+  <div class="modal_base" :class="className">
+    <slot></slot>
     <SvgIcon icon="close" color="#e6e6e6" @click="closeModal" />
     <teleport to="body">
       <ModalBack @click="closeModal" />
@@ -13,6 +12,10 @@
 import { onUnmounted } from "vue"
 import SvgIcon from "../parts/SvgIcon.vue"
 import ModalBack from "@/components/parts/ModalBack.vue"
+
+defineProps<{
+  className: string,
+}>()
 
 const emit = defineEmits<{
   (e: "closeModal"): void,
@@ -43,7 +46,6 @@ onUnmounted(() => {
   right: 0;
   bottom: 0;
   left: 0;
-  display: block;
   margin: auto;
   width: 95%;
   max-width: 555px;
