@@ -105,6 +105,21 @@ ul, li {
   opacity: 0.666;
 }
 
+.howan-enter-active,
+.howan-leave-active {
+  transition: all 0.2s cubic-bezier(.17,.67,.67,.99);
+}
+.howan-enter-from,
+.howan-leave-to {
+  opacity: 0;
+  transform: scale(0.93);
+}
+.howan-enter-to,
+.howan-leave-from {
+  opacity: 0.777;
+  transform: scale(1);
+}
+
 .gyun-enter-active {
   transition: transform 0.065s ease;
 }

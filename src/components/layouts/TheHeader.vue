@@ -14,13 +14,32 @@
         </div>
         <div class="royal" @click="showRoyal">
           <SvgIcon icon="royal" color="#e4e4e4" />
-          <div v-if="isNotShownStraightFlush" class="red_circle"></div>
+          <div v-if="isNotOpenStraightFlush" class="red_circle"></div>
         </div>
       </div>
     </header>
-    <Teleport to="body">
+    <teleport to="body">
       <TransparentBack v-if="isOpenBack" @click="closeBack" />
-    </Teleport>
+      <transition name="howan">
+        <ModalBase v-if="isOpenModalHowToPlay" className="hwt" @closeModal="closeModal">
+          <div class="title">
+            <span>あそびかた</span>
+          </div>
+          <div class="content">
+            <ul class="list">
+              <li>解答は<strong>ツーペア以上</strong>の役が含まれた<strong>ソート済み</strong>の 5 枚です（役がワンペアだった場合には不毛な総当たり攻撃を仕掛けるしかなくゲーム性が著しく損なわれます…）。</li>
+              <li>ソート順は一般的なポーカーおよびトランプの世界観にもとづいています。</li>
+              <li>入力時にはソート順や同一カード使用禁止などの制約はありません。</li>
+              <li>本家の Wordle と同じく、日ごとに解答がランダム生成されます。</li>
+              <li>キーボードだけで遊べます。</li>
+            </ul>
+            <div class="figure">
+              <img src="@/assets/how-to-play.png" alt="how-to-play">
+            </div>
+          </div>
+        </ModalBase>
+      </transition>
+    </teleport>
   </div>
 </template>
 
@@ -30,14 +49,16 @@ import { toBool } from '@/lib/utils'
 import { useStore } from '@/store/store'
 import SvgIcon from '../parts/SvgIcon.vue'
 import TransparentBack from '../parts/TransparentBack.vue'
+import ModalBase from "../modules/ModalBase.vue"
 
 const store = useStore()
 
-const isNotShownStraightFlush = ref(toBool(localStorage.getItem("isNotShownStraightFlush") ?? "true"))
+const isOpenModalHowToPlay = ref(toBool(localStorage.getItem("isOpenModalHowToPlay") ?? "true"))
+const isNotOpenStraightFlush = ref(toBool(localStorage.getItem("isNotOpenStraightFlush") ?? "true"))
 const isOpenBack = ref(false)
 
 const showHowToPlay = (): void => {
-  1
+  isOpenModalHowToPlay.value = true
 }
 
 const showHotKeys = (): void => {
@@ -46,8 +67,13 @@ const showHotKeys = (): void => {
 }
 
 const showRoyal = () => {
-  isNotShownStraightFlush.value = false
-  localStorage.setItem("isNotShownStraightFlush", "false")
+  isNotOpenStraightFlush.value = false
+  localStorage.setItem("isNotOpenStraightFlush", "false")
+}
+
+const closeModal = (): void => {
+  isOpenModalHowToPlay.value = false
+  localStorage.setItem("isOpenModalHowToPlay", "false")
 }
 
 const closeBack = () => {
@@ -92,6 +118,39 @@ const closeBack = () => {
           background-color: #f00;
           border-radius: 50%;
         }
+      }
+    }
+  }
+}
+</style>
+<style lang="scss">
+.hwt {
+  max-width: 666px !important;
+  height: 77% !important;
+  max-height: 555px !important;
+  padding: 0 3em;
+  .title {
+    margin-bottom: 0.7em;
+    font-size: 1.5em;
+    font-weight: bold;
+    letter-spacing: 3px;
+  }
+  .content {
+    font-size: 0.98em;
+    .list {
+      margin-bottom: 2.1em;
+      li {
+        list-style-type: disc;
+        margin: 0.3em auto;
+        padding-left: 0.3em;
+        line-height: 1.4;
+      }
+    }
+    .figure {
+      text-align: center;
+      img {
+        width: 90%;
+        aspect-ratio: 3.046;
       }
     }
   }

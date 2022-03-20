@@ -23,7 +23,7 @@
     </div>
     <teleport to="body">
       <transition name="fade">
-        <ModalBase v-if="isShowModalGameEnd" className="game_result" @closeModal="isShowModalGameEnd = false">
+        <ModalBase v-if="isOpenModalGameEnd" className="game_result" @closeModal="isOpenModalGameEnd = false">
           <div class="title">
             <span>{{ gameResult ? "Congratulations!" : "Game over..." }}</span>
           </div>
@@ -320,12 +320,12 @@ function attemptShare(shareData: Record<string, string>): any{  // eslint-disabl
   )
 }
 
-const isShowModalGameEnd = ref(false)
+const isOpenModalGameEnd = ref(false)
 const gameResult = ref(false)
 
 function showModalGameEnd(result: boolean): void {
   gameResult.value = result
-  isShowModalGameEnd.value = true
+  isOpenModalGameEnd.value = true
 }
 
 const backspace = (card: Card) => {
@@ -508,11 +508,6 @@ function suitToNum(suit: Suit): number {
 </style>
 <style lang="scss">
 .game_result {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: $text;
   .title {
     margin-bottom: 0.7em;
     font-size: 1.6em;

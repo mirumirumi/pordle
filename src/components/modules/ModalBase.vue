@@ -46,11 +46,16 @@ onUnmounted(() => {
   right: 0;
   bottom: 0;
   left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin: auto;
   width: 95%;
   max-width: 555px;
   height: 55%;
   max-height: 444px;
+  color: $text;
   background-color: $background;
   box-shadow: 0 5px 20px rgba($background, 0.666);
   border-radius: 7px;
