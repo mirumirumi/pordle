@@ -1,23 +1,28 @@
 import { Card, Cards } from "./defines"
 
 export default (cards: Cards<Card>): boolean => {
-  // 1 Pair, 2 Pair, 3 Card, Full House, 4 Card
-  const numHistoryHasPair: Array<number> = []
-  let countHasPair = 0
-  let countMax = 0
-  cards.forEach(card => {
-    countHasPair = 0
-    numHistoryHasPair.push(card.number as number)
-    for (const num of numHistoryHasPair) {
-      if (card.number === num)
-        countHasPair++ 
-      if (countMax < countHasPair)
-        countMax = countHasPair
+  // 2 Pair
+  const numHistory2Pair: Array<number> = []
+  let firstNumber = 0
+  for (const card of cards) {
+    numHistory2Pair.push(card.number as number)
+    if (2 <= numHistory2Pair.filter(e => (e === card.number) && (firstNumber !== 0) && (firstNumber !== card.number)).length) {
+      return true
     }
-  })
-  if (2 <= countMax)
-    return true
+    if (2 <= numHistory2Pair.filter(e => e === card.number).length) {
+      firstNumber = card.number as number
+    }
+  }
 
+  
+  //3 Card, Full House, 4 Card
+  const numHistory3Card: Array<number> = []
+  for (const card of cards) {
+    numHistory3Card.push(card.number as number)
+    if (3 <= numHistory3Card.filter(e => e === card.number).length) 
+      return true
+  }
+  
   
   // Straight
   const nums: Array<number> = []
@@ -47,7 +52,7 @@ export default (cards: Cards<Card>): boolean => {
   ;  // nothing to do
 
 
-  // BUTA
+  // BUTA (+ 1 Pair)
   return false
 }
 

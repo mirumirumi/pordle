@@ -26,7 +26,7 @@ import { Card, Cards } from "../../lib/defines"
 import { useStore } from "@/store/store"
 import SvgIcon from "../parts/SvgIcon.vue"
 import KeyName from "../parts/KeyName.vue"
-import validateHand from "../../lib/validate-hand"
+// import validateHand from "../../lib/validate-hand"
 
 const p = defineProps<{
   currentTrying: number,
