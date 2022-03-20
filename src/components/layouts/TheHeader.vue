@@ -12,9 +12,9 @@
         <div class="statitics" @click="showHotKeys">
           <SvgIcon icon="keyboard" color="#e4e4e4" />
         </div>
-        <div class="royal" @click="showRoyal">
+        <div class="royal" @click="showStraightFlush">
           <SvgIcon icon="royal" color="#e4e4e4" />
-          <div v-if="isNotOpenStraightFlush" class="red_circle"></div>
+          <div v-if="hasBeenNotOpenStraightFlush" class="red_circle"></div>
         </div>
       </div>
     </header>
@@ -39,6 +39,21 @@
           </div>
         </ModalBase>
       </transition>
+      <transition name="howan">
+        <ModalBase v-if="isOpenStraightFlush" className="straight_flush" @closeModal="closeModal">
+          <div class="title">
+            <span>ロイヤルストレートフラッシュの日くらいは遊びに来てやってもいいだって？</span>
+          </div>
+          <div class="content">
+            <p>メールアドレスを登録すると、解答がロイヤルストレートフラッシュの日に通知を受け取れます！確実な勝利を手にしましょう。</p>
+            <p>…と思ったんだけど、プログラムを使ってシミュレーションしてみたら次のロイヤルストレートフラッシュは西暦 3891 年 10 月 28 日までやってこないことがわかったんだ。僕は本当にこの機能を作るべきなのか少しだけ考えたあとに、そっとコードエディタを閉じました。なので下にある送信ボタンはあなたのメールアドレスをどこへも送ったりはしません 😞</p>
+            <div class="form">
+              <input type="text" class="input" placeholder="name@exmaple.com" disabled>
+              <button type="button" class="button fill" @click="onSubmit">Submit</button>
+            </div>
+          </div>
+        </ModalBase>
+      </transition>
     </teleport>
   </div>
 </template>
@@ -54,7 +69,8 @@ import ModalBase from "../modules/ModalBase.vue"
 const store = useStore()
 
 const isOpenModalHowToPlay = ref(toBool(localStorage.getItem("isOpenModalHowToPlay") ?? "true"))
-const isNotOpenStraightFlush = ref(toBool(localStorage.getItem("isNotOpenStraightFlush") ?? "true"))
+const isOpenStraightFlush = ref(false)
+const hasBeenNotOpenStraightFlush = ref(toBool(localStorage.getItem("hasBeenNotOpenStraightFlush") ?? "true"))
 const isOpenBack = ref(false)
 
 const showHowToPlay = (): void => {
@@ -66,19 +82,24 @@ const showHotKeys = (): void => {
   store.isShownHotKeys = true
 }
 
-const showRoyal = () => {
-  isNotOpenStraightFlush.value = false
-  localStorage.setItem("isNotOpenStraightFlush", "false")
+const showStraightFlush = () => {
+  isOpenStraightFlush.value = true
+  localStorage.setItem("hasBeenNotOpenStraightFlush", "false")
 }
 
 const closeModal = (): void => {
   isOpenModalHowToPlay.value = false
+  isOpenStraightFlush.value = false
   localStorage.setItem("isOpenModalHowToPlay", "false")
 }
 
 const closeBack = () => {
   isOpenBack.value = false
   store.isShownHotKeys = false
+}
+
+const onSubmit = () => {
+  alert('わざわざ押してくれてありがとう！')
 }
 </script>
 
@@ -152,6 +173,42 @@ const closeBack = () => {
         width: 90%;
         aspect-ratio: 3.046;
       }
+    }
+  }
+}
+.straight_flush {
+  max-width: 666px !important;
+  padding: 0 3em;
+  .title {
+    margin-bottom: 0.7em;
+    font-size: 1.5em;
+    font-weight: bold;
+    letter-spacing: 3px;
+    line-height: 1.3;
+  }
+  .content {
+    font-size: 0.98em;
+  }
+  .form {
+    margin-top: 1.5em;
+    text-align: center;
+    > * {
+      margin: auto 1em;
+    }
+    input {
+      height: 35px;
+      padding: 5px 9px;
+      border: solid 1px #e4e4e4;
+      border-radius: 4.4px;
+      background-color: #f6f8fa;
+      color: #37342f;
+      vertical-align: middle;
+      outline: none;
+      appearance: none;
+    }
+    button {
+      height: 35px;
+      padding: 0.23em 1.1rem 0.3em;
     }
   }
 }
