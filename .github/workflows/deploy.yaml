@@ -10,20 +10,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+    
       - uses: actions/setup-node@v2.4.1
         with:
           node-version: "14"
-      - run: npm install
-      - name: gpg
-        run: |
-          echo "${{ secrets.GPG_PASSPHRASE }}" | sudo gpg --batch --passphrase-fd 0 --output ".env.prd" --decrypt ".env.prd.gpg" 
-      - run: npm run build-prd
-      - name: prd deploy
+
+      - name: Installing npm modules...
+        run: npm install
+
+      # - name: Decrypting secrets with gpg...
+      #   run: |
+      #     echo "${{ secrets.GPG_PASSPHRASE }}" | sudo gpg --batch --passphrase-fd 0 --output ".env.prd" --decrypt ".env.prd.gpg" 
+
+      - name: Building...
+        run: npm run build-prd
+
+      - name: Deploying...
         run: |
           mkdir -p ~/.ssh/
           echo "${{ secrets.CONOHA_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-          ssh -oStrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.CONOHA_USERNAME }}@${{ secrets.CONOHA_HOST }} -p ${{ secrets.CONOHA_PORT }} rm -r public_html/mirumi.me/apps/xxxxxxxxxxxxx/*
+          ssh -oStrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.CONOHA_USERNAME }}@${{ secrets.CONOHA_HOST }} -p ${{ secrets.CONOHA_PORT }} rm -r public_html/mirumi.me/apps/pordle/*
           ls -lha dist/
-          scp -r -i ~/.ssh/id_rsa -P ${{ secrets.CONOHA_PORT }} dist/* ${{ secrets.CONOHA_USERNAME }}@${{ secrets.CONOHA_HOST }}:public_html/mirumi.me/apps/xxxxxxxxxxxxx/
+          scp -r -i ~/.ssh/id_rsa -P ${{ secrets.CONOHA_PORT }} dist/* ${{ secrets.CONOHA_USERNAME }}@${{ secrets.CONOHA_HOST }}:public_html/mirumi.me/apps/pordle/
