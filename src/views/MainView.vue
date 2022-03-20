@@ -62,7 +62,7 @@ const positionOccuredChange = ref("0_0")
 const eventkicker = ref(0)
 
 const date = new Date()
-const today = date.getFullYear().toString() + date.getMonth().toString() + date.getDate().toString()
+const today = date.getFullYear().toString() + (("0" + (date.getMonth() + 1)).slice(-2)).toString() + (("0" + (date.getDate())).slice(-2)).toString()
 
 let numLoadedImages = 0
 const isNotLoading = ref(false)
@@ -210,7 +210,7 @@ const batchValidate = async (cards: Cards<Card>) => {
 
 async function gameMaster(cards: Cards<Card>) {
   // compare with answer
-  const compareResult = compareWithAnswer(cards, generateAnswer())
+  const compareResult = compareWithAnswer(cards, generateAnswer(today))
 
   await setCardStylesForField(currentTrying.value + 1, compareResult)
 

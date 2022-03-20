@@ -3,9 +3,7 @@ import validateHand from "@/lib/validate-hand"
 import { isSameObjects } from "./utils"
 import { Card, Cards, Suit, Num } from "./defines"
 
-export default (): Cards<Card> => {
-  const date = new Date()
-  const seed = date.getFullYear().toString() + date.getMonth().toString() + date.getDate().toString()
+export default (seed: string): Cards<Card> => {
   seedrandom(seed, { global: true })
 
   const generatedCards: Cards<Card> = [{}, {}, {}, {}, {}]
