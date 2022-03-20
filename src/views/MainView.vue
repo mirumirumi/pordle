@@ -28,12 +28,12 @@
             <span>{{ gameResult ? "Congratulations!" : "Game over..." }}</span>
           </div>
           <div class="result">
-            <span>You guessed <span style="display: inline-block; margin: auto 0.1em; font-size: 1.3em;">3</span> time(s)</span>
+            <span>You guessed <span style="display: inline-block; margin: auto 0.1em; font-size: 1.3em;">{{ currentTrying }}</span> time(s)</span>
           </div>
           <div class="graph" v-html="graph">
           </div>
           <div class="share">
-            <button type="button" class="button fill" @click="share">Tweet to share</button>
+            <button type="button" class="button fill" @click="share(gameResult)">Tweet to share</button>
           </div>
         </ModalBase>
       </transition>
@@ -51,6 +51,7 @@ import generateAnswer from "../lib/generate-answer"
 import compareWithAnswer from "../lib/compare-with-answer"
 import _ from "lodash"
 import localForage from "localforage"
+import MobileDetect from "mobile-detect"
 import KeyName from "@/components/parts/KeyName.vue"
 import TrySetVue from "../components/modules/TrySet.vue"
 import LoadCards from "../components/parts/LoadCards.vue"
@@ -69,6 +70,8 @@ const graph = ref("")
 
 const date = new Date()
 const today = date.getFullYear().toString() + (("0" + (date.getMonth() + 1)).slice(-2)).toString() + (("0" + (date.getDate())).slice(-2)).toString()
+
+const md = new MobileDetect(window.navigator.userAgent)
 
 let numLoadedImages = 0
 const isNotLoading = ref(false)
@@ -245,7 +248,7 @@ async function gameMaster(cards: Cards<Card>, isBatch = false) {
 
   // clear a game!
   if (compareResult.every(e => e === "hit")) {
-    graph.value = generateGraph(true)
+    graph.value = generateGraph()
     showModalGameEnd(true)
   
 
@@ -255,31 +258,60 @@ async function gameMaster(cards: Cards<Card>, isBatch = false) {
 
   // lose a geme...
   if (5 <= currentTrying.value) {
-    graph.value = generateGraph(false)
+    graph.value = generateGraph()
     showModalGameEnd(false)
     return
   }
 }
 
-function generateGraph(isClear: boolean): string {
-  const result = "Pordle " + today + (isClear ? currentTrying.value + 1 : "x") + "/6"
+function generateGraph(isForTweet = false): string {
+  let result = ""
 
+  for (let i = 0; i < trySetSet.value.length; i++) {
+    for (let j = 0; j < trySetSet.value[i].length; j++) {
+      if (trySetSet.value[i][j].status === "hit") {
+        result += "🟩"
+      } else if (trySetSet.value[i][j].status === "blow") {
+        result += "🟨"
+      } else {
+        result += "⬜"
+      }
+    }
+    result +=  isForTweet ? "\n" : "<br />"
+  }
 
-
-  return `
-    ⬜⬜⬜⬜⬜<br>
-    ⬜⬜⬜⬜⬜<br>
-    ⬜⬜⬜⬜⬜<br>
-    ⬜⬜⬜⬜⬜<br>
-    ⬜⬜⬜🟩🟨<br>
-    ⬜⬜⬜🟩🟨<br>
-    `
+  return result
 }
 
-const share = () => {
-  1
+const share = async (isClear: boolean) => {
+  let result = "Pordle #" + today + " " + (isClear ? currentTrying.value : "x") + "/6" + "\n\n"
+  result += generateGraph(true)
+  const shareData = { text: result }
+  let shareSuccess = false
 
+  // https://bit.ly/3qgLh6M
+  try {
+    if (attemptShare(shareData)) {
+      navigator.share(shareData)
+      shareSuccess = true
+    }
+  } catch (error) {
+    shareSuccess = false
+  }
 
+  if (!shareSuccess) {
+    await navigator.clipboard.writeText(result)
+  }
+}
+
+function attemptShare(shareData: Record<string, string>): any{  // eslint-disable-line
+  return (
+    // browser.name?.toUpperCase().indexOf('FIREFOX') === -1 &&  // ME☆N☆DO☆I
+    navigator.canShare &&
+    navigator.canShare(shareData) &&
+    navigator.share &&
+    md.mobile()
+  )
 }
 
 const isShowModalGameEnd = ref(false)
