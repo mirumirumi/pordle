@@ -23,13 +23,18 @@
     </div>
     <teleport to="body">
       <transition name="fade">
-        <ModalBase v-if="isShowModalGameEnd" @closeModal="isShowModalGameEnd = false">
-          <template v-if="gameResult">
-  
-          </template>
-          <template v-else>
-            
-          </template>
+        <ModalBase v-if="isShowModalGameEnd" className="game_result" @closeModal="isShowModalGameEnd = false">
+          <div class="title">
+            <span>{{ gameResult ? "Congratulations!" : "Game over..." }}</span>
+          </div>
+          <div class="result">
+            <span>You guessed <span style="display: inline-block; margin: auto 0.1em; font-size: 1.3em;">3</span> time(s)</span>
+          </div>
+          <div class="graph" v-html="graph">
+          </div>
+          <div class="share">
+            <button type="button" class="button fill" @click="share">Tweet to share</button>
+          </div>
         </ModalBase>
       </transition>
     </teleport>
@@ -60,6 +65,7 @@ const KEY_NAMES_NUM  = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "J", "
 const currentTrying = ref(0)
 const positionOccuredChange = ref("0_0")
 const eventkicker = ref(0)
+const graph = ref("")
 
 const date = new Date()
 const today = date.getFullYear().toString() + (("0" + (date.getMonth() + 1)).slice(-2)).toString() + (("0" + (date.getDate())).slice(-2)).toString()
@@ -139,19 +145,6 @@ const receiveValidateResult = async (result: boolean): Promise<void> => {
   if (!result)
     return
 
-  const now = await localForage.getItem("cards") as Array<Cards<Card>>
-
-  // save tried data
-  if (now) {
-    const added = _.cloneDeep(now)
-    added.push(_.cloneDeep(trySetSet.value[currentTrying.value]))
-    await localForage.setItem("cards", added)
-  } else {  // at 1st time
-    await localForage.setItem("cards", [_.cloneDeep(trySetSet.value[currentTrying.value])])
-  }
-
-  await localForage.setItem("date", today)
-
   await gameMaster(trySetSet.value[currentTrying.value])
 
   // go next try...
@@ -170,7 +163,7 @@ onMounted(async () => {
   const savedCards = await localForage.getItem("cards") as Array<Cards<Card>>
   
   if (!savedCards)
-   return
+    return
 
   for (let i = 0; i < savedCards.length; i++) {
     trySetSet.value[i] = savedCards[i]
@@ -205,15 +198,24 @@ onMounted(async () => {
 })
 
 const batchValidate = async (cards: Cards<Card>) => {
-  await gameMaster(cards)
+  await gameMaster(cards, true)
 }
 
-async function gameMaster(cards: Cards<Card>) {
+async function gameMaster(cards: Cards<Card>, isBatch = false) {
   // compare with answer
   const compareResult = compareWithAnswer(cards, generateAnswer(today))
 
+  // set styles for field
   await setCardStylesForField(currentTrying.value + 1, compareResult)
 
+  // set result each card for game result
+  if (!isBatch) {
+    for (let i = 0; i < 5; i++) {
+      trySetSet.value[currentTrying.value][i].status = compareResult[i]
+    }
+  }
+
+  // set styles for deck
   for (const suit of SUITS) {
     for (let j = 0; j < NUMS.length; j++) {
       for (let k = 0; k < 5; k++) {
@@ -228,8 +230,22 @@ async function gameMaster(cards: Cards<Card>) {
     setCardStylesForDeck(cards[i].suit as Suit, cards[i].number as Num)
   }
 
+  // save tried data
+  if (!isBatch) {
+    const now = await localForage.getItem("cards") as Array<Cards<Card>>
+    if (now) {
+      const added = _.cloneDeep(now)
+      added.push(_.cloneDeep(trySetSet.value[currentTrying.value]))
+      await localForage.setItem("cards", added)
+    } else {  // at 1st time
+      await localForage.setItem("cards", [_.cloneDeep(trySetSet.value[currentTrying.value])])
+    }
+    await localForage.setItem("date", today)
+  }
+
   // clear a game!
   if (compareResult.every(e => e === "hit")) {
+    graph.value = generateGraph(true)
     showModalGameEnd(true)
   
 
@@ -239,9 +255,31 @@ async function gameMaster(cards: Cards<Card>) {
 
   // lose a geme...
   if (5 <= currentTrying.value) {
+    graph.value = generateGraph(false)
     showModalGameEnd(false)
     return
   }
+}
+
+function generateGraph(isClear: boolean): string {
+  const result = "Pordle " + today + (isClear ? currentTrying.value + 1 : "x") + "/6"
+
+
+
+  return `
+    ⬜⬜⬜⬜⬜<br>
+    ⬜⬜⬜⬜⬜<br>
+    ⬜⬜⬜⬜⬜<br>
+    ⬜⬜⬜⬜⬜<br>
+    ⬜⬜⬜🟩🟨<br>
+    ⬜⬜⬜🟩🟨<br>
+    `
+}
+
+const share = () => {
+  1
+
+
 }
 
 const isShowModalGameEnd = ref(false)
@@ -431,6 +469,30 @@ function suitToNum(suit: Suit): number {
 }
 </style>
 <style lang="scss">
+.game_result {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: $text;
+  .title {
+    margin-bottom: 0.7em;
+    font-size: 1.6em;
+    font-weight: bold;
+  }
+  .result {
+    margin-bottom: 0.6em;
+    font-size: 1.05em;
+  }
+  .graph {
+    margin-bottom: 1.99em;
+  }
+  .share {
+    button {
+
+    }
+  }
+}
 .hit {
   background-color: #00ad33;
 }
