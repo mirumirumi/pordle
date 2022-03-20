@@ -34,6 +34,9 @@
           </div>
           <div class="share">
             <button type="button" class="button fill" @click="share(gameResult)">Tweet to share</button>
+            <div class="copied" v-if="isShownCopied">
+              <span>Copied results to clipboard!</span>
+            </div>
           </div>
         </ModalBase>
       </transition>
@@ -283,6 +286,8 @@ function generateGraph(isForTweet = false): string {
   return result
 }
 
+const isShownCopied = ref(false)
+
 const share = async (isClear: boolean) => {
   let result = "Pordle #" + today + " " + (isClear ? currentTrying.value : "x") + "/6" + "\n\n"
   result += generateGraph(true)
@@ -301,6 +306,8 @@ const share = async (isClear: boolean) => {
 
   if (!shareSuccess) {
     await navigator.clipboard.writeText(result)
+    isShownCopied.value = true
+    setTimeout(() => isShownCopied.value = false, 1999)
   }
 }
 
@@ -520,8 +527,13 @@ function suitToNum(suit: Suit): number {
     margin-bottom: 1.99em;
   }
   .share {
-    button {
-
+    text-align: center;
+    .copied {
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin-top: 7px;
+      font-size: 0.8em;
     }
   }
 }
