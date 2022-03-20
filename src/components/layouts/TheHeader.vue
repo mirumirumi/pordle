@@ -27,9 +27,9 @@
           </div>
           <div class="content">
             <ul class="list">
-              <li>解答は<strong>ツーペア以上</strong>の役が含まれた<strong>ソート済み</strong>の 5 枚です（役がワンペアだった場合には不毛な総当たり攻撃を仕掛けるしかなくゲーム性が著しく損なわれます…）。</li>
-              <li>ソート順は一般的なポーカーおよびトランプの世界観にもとづいています。</li>
-              <li>入力時にはソート順や同一カード使用禁止などの制約はありません。</li>
+              <li>解答は <strong>ツーペア以上</strong> の役が含まれた <strong>ソート済み</strong> の 5 枚です（役がワンペアだった場合には不毛な総当たり攻撃を仕掛けるしかなくゲーム性が著しく損なわれるので…）。</li>
+              <li>ソート順は一般的なポーカーおよびトランプのルールにもとづいています。</li>
+              <li>入力時の手札は <strong>役なしでも OK</strong> です。ただし同じカードは使えません。</li>
               <li>本家の Wordle と同じく、日ごとに解答がランダム生成されます。</li>
               <li>キーボードだけで遊べます。</li>
             </ul>
@@ -42,7 +42,7 @@
       <transition name="howan">
         <ModalBase v-if="isOpenStraightFlush" className="straight_flush" @closeModal="closeModal">
           <div class="title">
-            <span>ロイヤルストレートフラッシュの日くらいは遊びに来てやってもいいだって？</span>
+            <span>ロイヤルストレートフラッシュの日くらいは遊びに来てやってもいいですって？</span>
           </div>
           <div class="content">
             <p>メールアドレスを登録すると、解答がロイヤルストレートフラッシュの日に通知を受け取れます！確実な勝利を手にしましょう。</p>

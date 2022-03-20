@@ -72,15 +72,22 @@ const batchOpenCards = () => {
 const validateFailed = ref(false)
 
 const validate = () => {
-  if (!validateHand(p.cards)) {
-    emit("passValidate", false)
+  // the hand at the time of input was allowed to have no hand
 
-    validateFailed.value = true
-    setTimeout(() => validateFailed.value = false, 500)
+  // if (!validateHand(p.cards)) {
+  //   emit("passValidate", false)
 
-    return
-  }
+  //   validateFailed.value = true
+  //   setTimeout(() => validateFailed.value = false, 500)
+
+  //   return
+  // }
   emit("passValidate", true)
+}
+
+const includeSameCard = () => {
+  validateFailed.value = true
+  setTimeout(() => validateFailed.value = false, 500)
 }
 
 const backspace = () => {
@@ -121,6 +128,7 @@ document.addEventListener("keydown", (e: KeyboardEvent) => {
 
 defineExpose({
   batchOpenCards,
+  includeSameCard,
 })
 </script>
 

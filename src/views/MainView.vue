@@ -53,6 +53,7 @@ import party from "../lib/party"
 import keyQueueHelper from "../lib/key-queue"
 import generateAnswer from "../lib/generate-answer"
 import compareWithAnswer from "../lib/compare-with-answer"
+import isIncludedSameCard from "../lib/is-included-same-card"
 import _ from "lodash"
 import localForage from "localforage"
 import MobileDetect from "mobile-detect"
@@ -114,6 +115,31 @@ const chooseCard = (suit: Suit, num: Num) => {
   // quit if the current trying set has already 5 cards
   if (trySetSet.value[currentTrying.value].every(e => !isEmpty(e)))
     return
+
+  // quit if cards already chosen include this time same card
+  if (isIncludedSameCard(trySetSet.value[currentTrying.value], suit, num)) {
+    switch (currentTrying.value) {
+      case 0:
+        TrySet_1.value.includeSameCard()
+        break
+      case 1:
+        TrySet_2.value.includeSameCard()
+        break
+      case 2:
+        TrySet_3.value.includeSameCard()
+        break
+      case 3:
+        TrySet_4.value.includeSameCard()
+        break
+      case 4:
+        TrySet_5.value.includeSameCard()
+        break
+      case 5:
+        TrySet_6.value.includeSameCard()
+        break
+    }
+    return
+  }
 
   for (let i = 0; i < trySetSet.value[currentTrying.value].length; i++) {
     if (isEmpty(trySetSet.value[currentTrying.value][i])) {      
