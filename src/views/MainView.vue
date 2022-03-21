@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from "vue"
+import { nextTick, onBeforeMount, onMounted, ref } from "vue"
 import { useStore } from "@/store/store"
 import { delay, isEmpty } from "../lib/utils"
 import { Suit, Num, Status, Card, Cards, TrySet } from "../lib/defines"
@@ -467,6 +467,20 @@ function suitToNum(suit: Suit): number {
     suitNum = 3
   return suitNum
 }
+
+const scrollWidth = ref("0")
+
+onBeforeMount(() => {
+  scrollWidth.value = (document.body.clientWidth * 1.626213592).toString() + "px"  // scrollWidth.xlsx
+})
+
+onMounted(() => {
+  if (912 < document.body.clientWidth)
+    return
+
+  const deck = document.getElementById("deck") as HTMLDivElement
+  ;deck.scrollLeft = (deck.scrollWidth - deck.clientWidth) / 2
+})
 </script>
 
 <style lang="scss" scoped>
@@ -483,6 +497,9 @@ function suitToNum(suit: Suit): number {
   #field {
     display: inline-block;
     height: 60%;
+    @include mobile {
+      margin-right: 66.6px;
+    }
   }
   #deck {
     position: relative;
@@ -501,6 +518,7 @@ function suitToNum(suit: Suit): number {
     }
     .suit {
       height: 25%;
+      margin: auto;
       padding: 3px 0;
       display: flex;
       justify-content: center;
@@ -509,17 +527,18 @@ function suitToNum(suit: Suit): number {
         display: inline-block;
         width: auto;
         height: 100%;
-        aspect-ratio: 0.6887;
+        // aspect-ratio: 0.6887;
+        aspect-ratio: auto;
         margin: auto 3px;
-        border: solid 1px #5d5d68;
+        // border: solid 1px #5d5d68;
         border-radius: 3px;
         cursor: pointer;
         transition: 0.23s all ease-out;
-        &.loaded {
-          border: none;
-        }
+        // &.loaded {
+        //   border: none;
+        // }
         img {
-          width: 100%;
+          // width: 100%;
           height: 100%;
           filter: saturate(0.7);
           transition: 0.23s all ease-out;
@@ -528,7 +547,16 @@ function suitToNum(suit: Suit): number {
           }
         }
       }
+      @include mobile {
+        width: v-bind(scrollWidth);
+      }
     }
+    @include mobile {
+      overflow-x: scroll;
+    }
+  }
+  @include mobile {
+    padding: 5px 5px 0;
   }
 }
 </style>

@@ -164,6 +164,9 @@ defineExpose({
     svg {
       width: 1.5em;
     }
+    @include mobile {
+      right: -10px;
+    }
   }
   &.failed {
     animation: failed 0.29s;
@@ -173,6 +176,9 @@ defineExpose({
   }
   .go_validate {
     right: calc(-25px - 2.7em);
+    @include mobile {
+      right: calc(-10px - 2.7em);
+    }
   }
 }
 </style>

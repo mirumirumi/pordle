@@ -134,7 +134,7 @@ ul, li {
  * responsive
  */
 @mixin mobile {
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 912px) {
     @content;
   }
 }

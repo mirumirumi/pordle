@@ -6,6 +6,7 @@ node_modules
 not_used/
 *.md
 !README.md
+*.xlsx
 
 !.env.*
 
