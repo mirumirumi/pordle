@@ -88,6 +88,7 @@ const showHotKeys = (): void => {
 
 const showStraightFlush = () => {
   isOpenStraightFlush.value = true
+  hasBeenNotOpenStraightFlush.value = false
   localStorage.setItem("hasBeenNotOpenStraightFlush", "false")
 }
 
@@ -121,7 +122,7 @@ const onSubmit = () => {
     .dummy {
       width: 120px;
       @include mobile {
-        width: 96px;
+        width: 64px;
       }
     }
     .title {

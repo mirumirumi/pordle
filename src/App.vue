@@ -17,7 +17,6 @@ import TheFooter from "@/components/layouts/TheFooter.vue"
   -moz-osx-font-smoothing: grayscale;
   color: $text;
   background-color: $background;
-  font-family: "Open Sans", Helvetica, "Lucida Sans Unicode", "Lucida Grande", Arial, Verdana, sans-serif;
   height: 100%;
   .view_wrap {
     height: calc(100% - (60px + 30px));
