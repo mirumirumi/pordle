@@ -17,6 +17,15 @@ export default (cards: Cards<Card>): "2-pair" | "3-card" | "full-house" | "4-car
     }
   }
 
+
+  //4 Card
+  const numHistory4card: Array<number> = []
+  for (const card of cards) {
+    numHistory4card.push(card.number as number)
+    if (4 === numHistory4card.filter(e => e === card.number).length) 
+      return "4-card"
+  }
+
   
   //3 Card
   const numHistory3Card: Array<number> = []
@@ -34,15 +43,6 @@ export default (cards: Cards<Card>): "2-pair" | "3-card" | "full-house" | "4-car
     return "2-pair"
   } else if (will3Card) {
     return "3-card"
-  }
-
-
-  //4 Card
-  const numHistory4card: Array<number> = []
-  for (const card of cards) {
-    numHistory4card.push(card.number as number)
-    if (4 === numHistory4card.filter(e => e === card.number).length) 
-      return "4-card"
   }
 
   

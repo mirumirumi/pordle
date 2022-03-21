@@ -92,7 +92,48 @@ export default (seed: string): Cards<Card> => {
       }
       break
     }
+    case "full-house": {
+      let index = 3
+      let index2 = 0
+      const indexes = []
+      for (const sorted of sortedCards) {
+        for (let i = 0; i < 5; i++) {
+          if (sorted.suit === generatedCards[i].suit && sorted.number === generatedCards[i].number) {
+            if (generatedCards.filter(e => e.number === sorted.number).length === 2) {
+              result[index] = generatedCards[i]
+              indexes.push(i)
+              index++
+            } else if (generatedCards.filter(e => e.number === sorted.number).length === 3) {
+              result[index2] = generatedCards[i]
+              indexes.push(i)
+              index2++
+            }
+          }
+        }
       }
+      break
+    }
+    case "4-card": {
+      let index = 0
+      const indexes = []
+      for (const sorted of sortedCards) {
+        for (let i = 0; i < 5; i++) {
+          if (sorted.suit === generatedCards[i].suit && sorted.number === generatedCards[i].number) {
+            if (generatedCards.filter(e => e.number === sorted.number).length === 4) {
+              result[index] = generatedCards[i]
+              indexes.push(i)
+              index++
+            }
+          }
+        }
+      }
+      for (let i = 0; i < 5; i++) {
+        if (!indexes.includes(i)) {
+          result[4] = generatedCards[i]
+        }
+      }
+      break
+    }
     case "straight": {
       let index = 0
       for (const sorted of sortedCards) {
