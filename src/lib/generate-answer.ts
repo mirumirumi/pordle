@@ -68,6 +68,34 @@ export default (seed: string): Cards<Card> => {
       break
     }
       }
+    case "straight": {
+      let index = 0
+      for (const sorted of sortedCards) {
+        for (let i = 0; i < 5; i++) {
+          if (sorted.suit === generatedCards[i].suit && sorted.number === generatedCards[i].number) {
+            result[index] = generatedCards[i]
+            index++
+          }
+        }
+      }
+      if (result[0].number === 1 && result[1].number === 5 && result[2].number === 4 && result[3].number === 3 && result[4].number === 2) {  // for 5-High-Straight
+        const _ = result[0]
+        result.splice(0, 1)
+        result.push(_)
+      }
+      break
+    }
+    case "flush": {
+      let index = 0
+      for (const sorted of sortedCards) {
+        for (let i = 0; i < 5; i++) {
+          if (sorted.suit === generatedCards[i].suit && sorted.number === generatedCards[i].number) {
+            result[index] = generatedCards[i]
+            index++
+          }
+        }
+      }
+      break
     }
   }
 
