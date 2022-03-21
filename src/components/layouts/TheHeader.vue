@@ -1,7 +1,7 @@
 <template>
   <div class="header_wrap">
     <header>
-      <div class="dummy" style="width: 120px;"></div>
+      <div class="dummy"></div>
       <div class="title">
         <span>Pordle</span>
       </div>
@@ -9,7 +9,7 @@
         <div class="how_to_play" @click="showHowToPlay">
           <SvgIcon icon="how_to_play" color="#e4e4e4" />
         </div>
-        <div class="statitics" @click="showHotKeys">
+        <div v-if="!md.mobile() && isLargeScreen" class="keyboard" @click="showHotKeys">
           <SvgIcon icon="keyboard" color="#e4e4e4" />
         </div>
         <div class="royal" @click="showStraightFlush">
@@ -46,7 +46,7 @@
           </div>
           <div class="content">
             <p>メールアドレスを登録すると、解答がロイヤルストレートフラッシュの日に通知を受け取れます！確実な勝利を手にしましょう。</p>
-            <p>…と思ったんだけど、プログラムを使ってシミュレーションしてみたら次のロイヤルストレートフラッシュは西暦 3891 年 10 月 28 日までやってこないことがわかったんだ。僕は本当にこの機能を作るべきなのか少しだけ考えたあとに、そっとコードエディタを閉じました。なので下にある送信ボタンはあなたのメールアドレスをどこへも送ったりはしません 😞</p>
+            <p>…と思ったんだけど、プログラムを使ってシミュレーションしてみたら次のロイヤルストレートフラッシュは西暦 3891 年 10 月 28 日までやってこないことがわかったんだ。僕は本当にこの機能を作るべきなのか少しだけ考えたあとに、そっとコードエディタを閉じました。なので下にある送信ボタンはあなたのメールアドレスをどこかへ送ったりはしません 😞</p>
             <div class="form">
               <input type="text" class="input" placeholder="name@exmaple.com" disabled>
               <button type="button" class="button fill" @click="onSubmit">Submit</button>
@@ -62,9 +62,10 @@
 import { ref } from 'vue'
 import { toBool } from '@/lib/utils'
 import { useStore } from '@/store/store'
+import MobileDetect from "mobile-detect"
 import SvgIcon from '../parts/SvgIcon.vue'
-import TransparentBack from '../parts/TransparentBack.vue'
 import ModalBase from "../modules/ModalBase.vue"
+import TransparentBack from '../parts/TransparentBack.vue'
 
 const store = useStore()
 
@@ -72,6 +73,9 @@ const isOpenModalHowToPlay = ref(toBool(localStorage.getItem("isOpenModalHowToPl
 const isOpenStraightFlush = ref(false)
 const hasBeenNotOpenStraightFlush = ref(toBool(localStorage.getItem("hasBeenNotOpenStraightFlush") ?? "true"))
 const isOpenBack = ref(false)
+
+const md = new MobileDetect(window.navigator.userAgent)
+const isLargeScreen = ref(912 < document.body.clientWidth)
 
 const showHowToPlay = (): void => {
   isOpenModalHowToPlay.value = true
@@ -114,10 +118,19 @@ const onSubmit = () => {
     height: 60px;
     margin: auto;
     padding: 10px 30px;
+    .dummy {
+      width: 120px;
+      @include mobile {
+        width: 96px;
+      }
+    }
     .title {
       user-select: none;
       font-size: 2em;
       font-weight: bold;
+      @include mobile {
+        font-size: 1.8em;
+      }
     }
     .menu {
       display: flex;
@@ -139,7 +152,13 @@ const onSubmit = () => {
           background-color: #f00;
           border-radius: 50%;
         }
+        @include mobile {
+          margin: auto 1px;
+        }
       }
+    }
+    @include mobile {
+      padding: 10px 3px;
     }
   }
 }
@@ -172,8 +191,15 @@ const onSubmit = () => {
       img {
         width: 90%;
         aspect-ratio: 3.046;
+        @include mobile {
+          width: 100%;
+        }
       }
     }
+  }
+  @include mobile {
+    padding: 0 1.5em;
+    font-size: 0.9em;
   }
 }
 .straight_flush {
@@ -181,7 +207,7 @@ const onSubmit = () => {
   padding: 0 3em;
   .title {
     margin-bottom: 0.7em;
-    font-size: 1.5em;
+    font-size: 1.35em;
     font-weight: bold;
     letter-spacing: 3px;
     line-height: 1.3;
@@ -193,7 +219,10 @@ const onSubmit = () => {
     margin-top: 1.5em;
     text-align: center;
     > * {
-      margin: auto 1em;
+      margin: 5px 1em;
+      @include mobile {
+        margin: 5px 5px;
+      }
     }
     input {
       height: 35px;
@@ -210,6 +239,15 @@ const onSubmit = () => {
       height: 35px;
       padding: 0.23em 1.1rem 0.3em;
     }
+  }
+  @include mobile {
+    height: auto !important;
+    max-height: 75% !important;
+    padding: 0 1em;
+    font-size: 0.9em;
+  }
+  @media screen and (max-width: 320px) {
+    max-height: 99% !important;
   }
 }
 </style>

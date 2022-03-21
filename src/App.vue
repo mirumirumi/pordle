@@ -23,4 +23,9 @@ import TheFooter from "@/components/layouts/TheFooter.vue"
     height: calc(100% - (60px + 30px));
   }
 }
+@include mobile {
+  .mobile_none {
+    display: none;
+  }
+}
 </style>

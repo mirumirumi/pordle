@@ -1,7 +1,7 @@
 <template>
   <div class="footer_wrap">
     <footer>
-      © {{ year }} Pordle, developed by <a href="https://twitter.com/milmemo_net">@mirumi</a>. Source code is <a href="https://github.com/mirumirumi/pordle">here</a>.
+      © {{ year }} Pordle, developed by <a href="https://twitter.com/milmemo_net">@mirumi</a>.<span class="mobile_none"> Source code is <a href="https://github.com/mirumirumi/pordle">here</a>.</span>
       <!-- https://github.com/mirumirumi?tab=repositories&q=pordle&type=&language=&sort=name -->
     </footer>
   </div>
