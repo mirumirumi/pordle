@@ -42,14 +42,31 @@ export default (seed: string): Cards<Card> => {
     }
   } while (!validateHand(generatedCards) || isAlreadyExistSameCard)
 
-  // sorting
+  // sort
+  const hand = validateHand(generatedCards) as string
   const result: Cards<Card> = [{}, {}, {}, {}, {}]
-  let index = 0
-  for (const sorted of sortedCards) {
-    for (let i = 0; i < 5; i++) {
-      if (isSameObjects(sorted as Record<string, unknown>, generatedCards[i] as Record<string, unknown>)) {
-        result[index] = generatedCards[i]
-        index++
+  switch (hand) {
+    case "2-pair": {
+      let index = 0
+      const indexes = []
+      for (const sorted of sortedCards) {
+        for (let i = 0; i < 5; i++) {
+          if (sorted.suit === generatedCards[i].suit && sorted.number === generatedCards[i].number) {
+            if (generatedCards.filter(e => e.number === sorted.number).length === 2) {
+              result[index] = generatedCards[i]
+              indexes.push(i)
+              index++
+            }
+          }
+        }
+      }
+      for (let i = 0; i < 5; i++) {
+        if (!indexes.includes(i)) {
+          result[4] = generatedCards[i]
+        }
+      }
+      break
+    }
       }
     }
   }
@@ -67,7 +84,31 @@ const sortedCards: Array<Card> = [
     number: 1,
   },
   {
+    suit: "heart",
+    number: 1,
+  },
+  {
+    suit: "diamond",
+    number: 1,
+  },
+  {
+    suit: "club",
+    number: 1,
+  },
+  {
     suit: "spade",
+    number: 13,
+  },
+  {
+    suit: "heart",
+    number: 13,
+  },
+  {
+    suit: "diamond",
+    number: 13,
+  },
+  {
+    suit: "club",
     number: 13,
   },
   {
@@ -75,7 +116,31 @@ const sortedCards: Array<Card> = [
     number: 12,
   },
   {
+    suit: "heart",
+    number: 12,
+  },
+  {
+    suit: "diamond",
+    number: 12,
+  },
+  {
+    suit: "club",
+    number: 12,
+  },
+  {
     suit: "spade",
+    number: 11,
+  },
+  {
+    suit: "heart",
+    number: 11,
+  },
+  {
+    suit: "diamond",
+    number: 11,
+  },
+  {
+    suit: "club",
     number: 11,
   },
   {
@@ -83,7 +148,31 @@ const sortedCards: Array<Card> = [
     number: 10,
   },
   {
+    suit: "heart",
+    number: 10,
+  },
+  {
+    suit: "diamond",
+    number: 10,
+  },
+  {
+    suit: "club",
+    number: 10,
+  },
+  {
     suit: "spade",
+    number: 9,
+  },
+  {
+    suit: "heart",
+    number: 9,
+  },
+  {
+    suit: "diamond",
+    number: 9,
+  },
+  {
+    suit: "club",
     number: 9,
   },
   {
@@ -91,7 +180,31 @@ const sortedCards: Array<Card> = [
     number: 8,
   },
   {
+    suit: "heart",
+    number: 8,
+  },
+  {
+    suit: "diamond",
+    number: 8,
+  },
+  {
+    suit: "club",
+    number: 8,
+  },
+  {
     suit: "spade",
+    number: 7,
+  },
+  {
+    suit: "heart",
+    number: 7,
+  },
+  {
+    suit: "diamond",
+    number: 7,
+  },
+  {
+    suit: "club",
     number: 7,
   },
   {
@@ -99,7 +212,31 @@ const sortedCards: Array<Card> = [
     number: 6,
   },
   {
+    suit: "heart",
+    number: 6,
+  },
+  {
+    suit: "diamond",
+    number: 6,
+  },
+  {
+    suit: "club",
+    number: 6,
+  },
+  {
     suit: "spade",
+    number: 5,
+  },
+  {
+    suit: "heart",
+    number: 5,
+  },
+  {
+    suit: "diamond",
+    number: 5,
+  },
+  {
+    suit: "club",
     number: 5,
   },
   {
@@ -107,7 +244,31 @@ const sortedCards: Array<Card> = [
     number: 4,
   },
   {
+    suit: "heart",
+    number: 4,
+  },
+  {
+    suit: "diamond",
+    number: 4,
+  },
+  {
+    suit: "club",
+    number: 4,
+  },
+  {
     suit: "spade",
+    number: 3,
+  },
+  {
+    suit: "heart",
+    number: 3,
+  },
+  {
+    suit: "diamond",
+    number: 3,
+  },
+  {
+    suit: "club",
     number: 3,
   },
   {
@@ -116,155 +277,11 @@ const sortedCards: Array<Card> = [
   },
   {
     suit: "heart",
-    number: 1,
-  },
-  {
-    suit: "heart",
-    number: 13,
-  },
-  {
-    suit: "heart",
-    number: 12,
-  },
-  {
-    suit: "heart",
-    number: 11,
-  },
-  {
-    suit: "heart",
-    number: 10,
-  },
-  {
-    suit: "heart",
-    number: 9,
-  },
-  {
-    suit: "heart",
-    number: 8,
-  },
-  {
-    suit: "heart",
-    number: 7,
-  },
-  {
-    suit: "heart",
-    number: 6,
-  },
-  {
-    suit: "heart",
-    number: 5,
-  },
-  {
-    suit: "heart",
-    number: 4,
-  },
-  {
-    suit: "heart",
-    number: 3,
-  },
-  {
-    suit: "heart",
     number: 2,
   },
   {
     suit: "diamond",
-    number: 1,
-  },
-  {
-    suit: "diamond",
-    number: 13,
-  },
-  {
-    suit: "diamond",
-    number: 12,
-  },
-  {
-    suit: "diamond",
-    number: 11,
-  },
-  {
-    suit: "diamond",
-    number: 10,
-  },
-  {
-    suit: "diamond",
-    number: 9,
-  },
-  {
-    suit: "diamond",
-    number: 8,
-  },
-  {
-    suit: "diamond",
-    number: 7,
-  },
-  {
-    suit: "diamond",
-    number: 6,
-  },
-  {
-    suit: "diamond",
-    number: 5,
-  },
-  {
-    suit: "diamond",
-    number: 4,
-  },
-  {
-    suit: "diamond",
-    number: 3,
-  },
-  {
-    suit: "diamond",
     number: 2,
-  },
-  {
-    suit: "club",
-    number: 1,
-  },
-  {
-    suit: "club",
-    number: 13,
-  },
-  {
-    suit: "club",
-    number: 12,
-  },
-  {
-    suit: "club",
-    number: 11,
-  },
-  {
-    suit: "club",
-    number: 10,
-  },
-  {
-    suit: "club",
-    number: 9,
-  },
-  {
-    suit: "club",
-    number: 8,
-  },
-  {
-    suit: "club",
-    number: 7,
-  },
-  {
-    suit: "club",
-    number: 6,
-  },
-  {
-    suit: "club",
-    number: 5,
-  },
-  {
-    suit: "club",
-    number: 4,
-  },
-  {
-    suit: "club",
-    number: 3,
   },
   {
     suit: "club",
