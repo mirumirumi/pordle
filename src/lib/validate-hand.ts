@@ -51,7 +51,7 @@ export default (cards: Cards<Card>): "2-pair" | "3-card" | "full-house" | "4-car
   cards.forEach(card => nums.push(card.number ?? 0))
   nums.sort(sortAsc)
 
-  if (JSON.stringify(nums) === JSON.stringify([1, 10, 11, 12, 13]))  // case: Broadway (A K Q J 10)
+  if (JSON.stringify(nums) === JSON.stringify([1, 13, 12, 11, 10]))  // case: Broadway (A K Q J 10)
     return "straight"
 
   let countup = 0
