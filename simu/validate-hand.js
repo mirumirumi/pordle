@@ -1,36 +1,34 @@
-import { Card, Cards } from "./defines"
-
-export default (cards: Cards<Card>): "2-pair" | "3-card" | "full-house" | "4-card" | "straight" | "flush" | null => {
+module.exports = (cards) => {
   let will2Pair = false
   let will3Card = false
 
   // 2 Pair
-  const numHistory2Pair: Array<number> = []
+  const numHistory2Pair = []
   let firstNumber = 0
   for (const card of cards) {
-    numHistory2Pair.push(card.number as number)
+    numHistory2Pair.push(card.number)
     if (2 === numHistory2Pair.filter(e => (e === card.number) && (firstNumber !== 0) && (firstNumber !== card.number)).length) {
       will2Pair = true
     }
     if (2 === numHistory2Pair.filter(e => e === card.number).length) {
-      firstNumber = card.number as number
+      firstNumber = card.number
     }
   }
 
 
   //4 Card
-  const numHistory4card: Array<number> = []
+  const numHistory4card = []
   for (const card of cards) {
-    numHistory4card.push(card.number as number)
+    numHistory4card.push(card.number)
     if (4 === numHistory4card.filter(e => e === card.number).length) 
       return "4-card"
   }
 
   
   //3 Card
-  const numHistory3Card: Array<number> = []
+  const numHistory3Card = []
   for (const card of cards) {
-    numHistory3Card.push(card.number as number)
+    numHistory3Card.push(card.number)
     if (3 === numHistory3Card.filter(e => e === card.number).length) 
       will3Card = true
   }
@@ -47,11 +45,11 @@ export default (cards: Cards<Card>): "2-pair" | "3-card" | "full-house" | "4-car
 
   
   // Straight
-  const nums: Array<number> = []
+  const nums = []
   cards.forEach(card => nums.push(card.number ?? 0))
   nums.sort(sortAsc)
 
-  if (JSON.stringify(nums) === JSON.stringify([1, 13, 12, 11, 10]))  // case: Broadway (A K Q J 10)
+  if (JSON.stringify(nums) === JSON.stringify([1, 10, 11, 12, 13]))  // case: Broadway (A K Q J 10)
     return "straight"
 
   let countup = 0
@@ -78,6 +76,6 @@ export default (cards: Cards<Card>): "2-pair" | "3-card" | "full-house" | "4-car
   return null
 }
 
-function sortAsc(a: number, b: number): number {
+function sortAsc(a, b) {
   return a - b
 }

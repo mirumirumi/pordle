@@ -1,12 +1,16 @@
-import seedrandom from "seedrandom"
-import validateHand from "@/lib/validate-hand"
-import { isSameObjects } from "./utils"
-import { Card, Cards, Suit, Num } from "./defines"
+const seedrandom = require("seedrandom")
+const validateHand = require("validate-hand")
 
-export default (seed: string): Cards<Card> => {
+function isSameObjects(_a, _b) {
+  const _aJSON = JSON.stringify(Object.entries(_a).sort())
+  const _bJSON = JSON.stringify(Object.entries(_b).sort())
+  return _aJSON === _bJSON
+}
+
+module.exports = (seed) => {
   seedrandom(seed, { global: true })
 
-  const generatedCards: Cards<Card> = [{}, {}, {}, {}, {}]
+  const generatedCards = [{}, {}, {}, {}, {}]
   let isAlreadyExistSameCard = false
   
   do {
@@ -31,20 +35,20 @@ export default (seed: string): Cards<Card> => {
         suit = "club"
 
       for (const card of generatedCards) {
-        if (isSameObjects({ suit: suit, number: nums[i] + 1 }, card as Record<string, unknown>)) {
+        if (isSameObjects({ suit: suit, number: nums[i] + 1 }, card)) {
           isAlreadyExistSameCard = true
           continue
         }
       }
   
-      generatedCards[i].suit = suit as Suit
-      generatedCards[i].number = nums[i] + 1 as Num
+      generatedCards[i].suit = suit
+      generatedCards[i].number = nums[i] + 1
     }
   } while (!validateHand(generatedCards) || isAlreadyExistSameCard)
 
   // sort
-  const hand = validateHand(generatedCards) as string
-  const result: Cards<Card> = [{}, {}, {}, {}, {}]
+  const hand = validateHand(generatedCards)
+  const result = [{}, {}, {}, {}, {}]
   switch (hand) {
     case "2-pair": {
       let index = 0
@@ -168,11 +172,11 @@ export default (seed: string): Cards<Card> => {
   return result
 }
 
-function randomInt(max: number): number {
+function randomInt(max) {
   return Math.floor(Math.random() * max)
 }
 
-const sortedCards: Array<Card> = [
+const sortedCards = [
   {
     suit: "spade",
     number: 1,
