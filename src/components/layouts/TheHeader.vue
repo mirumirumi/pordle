@@ -167,14 +167,13 @@ const onSubmit = () => {
 <style lang="scss">
 .hwt {
   max-width: 666px !important;
-  height: 77% !important;
-  max-height: 555px !important;
   padding: 0 3em;
   .title {
     margin-bottom: 0.7em;
     font-size: 1.5em;
     font-weight: bold;
     letter-spacing: 3px;
+    text-align: center;
   }
   .content {
     font-size: 0.98em;

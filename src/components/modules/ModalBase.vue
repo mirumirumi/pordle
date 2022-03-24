@@ -1,9 +1,11 @@
 <template>
-  <div class="modal_base" :class="className">
-    <slot></slot>
-    <SvgIcon icon="close" color="#e6e6e6" @click="closeModal" />
+  <div class="modal_base" id="modal_base" @click="clickedToCloseModal($event)">
+    <div class="modal" id="modal_body" :class="className">
+      <slot></slot>
+      <SvgIcon icon="close" color="#e6e6e6" @click="closeModal" />
+    </div>
     <teleport to="body">
-      <ModalBack @click="closeModal" />
+      <ModalBack />
     </teleport>
   </div>
 </template>
@@ -20,6 +22,26 @@ defineProps<{
 const emit = defineEmits<{
   (e: "closeModal"): void,
 }>()
+
+const clickedToCloseModal = (e: any = null) => {  // eslint-disable-line
+  if (e.target.id === "modal_body")
+    return
+
+  let isModalChild = false
+  let parent = e.target.parentElement
+  while (parent) {
+    if (parent.id === "modal_body") {
+      isModalChild = true
+      break
+    }
+    parent = parent.parentElement
+  }
+
+  if (isModalChild)
+    return
+
+  closeModal()
+}
 
 const closeModal = () => {
   emit("closeModal")
@@ -42,29 +64,26 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .modal_base {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-  width: 95%;
-  max-width: 555px;
-  height: 55%;
-  max-height: 444px;
-  color: $text;
-  background-color: $background;
-  box-shadow: 0 5px 20px rgba($background, 0.666);
-  border-radius: 7px;
   z-index: 2;
-  svg {
-    top: 15px;
-    right: 25px;
-    bottom: auto;
-    cursor: pointer;
+  .modal {
+    margin: auto;
+    position: relative;
+    width: 95%;
+    max-width: 555px;
+    padding-top: 2.3em;
+    padding-bottom: 2.3em;
+    color: $text;
+    background-color: $background;
+    box-shadow: 0 5px 20px rgba($background, 0.666);
+    border-radius: 7px;
+    svg {
+      top: 10px;
+      right: 19px;
+      bottom: auto;
+      cursor: pointer;
+    }
   }
 }
 </style>
