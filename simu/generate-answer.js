@@ -1,5 +1,5 @@
 const seedrandom = require("seedrandom")
-const validateHand = require("validate-hand")
+const validateHand = require("./validate-hand")
 
 function isSameObjects(_a, _b) {
   const _aJSON = JSON.stringify(Object.entries(_a).sort())
@@ -19,8 +19,8 @@ module.exports = (seed) => {
     isAlreadyExistSameCard = false
 
     for (let i = 0; i < 5; i++) {
-      suits.push(randomInt(3))
-      nums.push(randomInt(12))
+      suits.push(randomInt(4))
+      nums.push(randomInt(13))
     }
 
     for (let i = 0; i < 5; i++) {
@@ -43,7 +43,7 @@ module.exports = (seed) => {
   
       generatedCards[i].suit = suit
       generatedCards[i].number = nums[i] + 1
-    }
+    }  
   } while (!validateHand(generatedCards) || isAlreadyExistSameCard)
 
   // sort
