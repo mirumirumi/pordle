@@ -562,6 +562,9 @@ onMounted(() => {
 </style>
 <style lang="scss">
 .game_result {
+  padding-top: 2.35em !important;
+  padding-bottom: 2.7em !important;
+  text-align: center;
   .title {
     margin-bottom: 0.7em;
     font-size: 1.6em;
