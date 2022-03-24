@@ -15,8 +15,8 @@ export default (seed: string): Cards<Card> => {
     isAlreadyExistSameCard = false
 
     for (let i = 0; i < 5; i++) {
-      suits.push(randomInt(3))
-      nums.push(randomInt(12))
+      suits.push(randomInt(4))
+      nums.push(randomInt(13))
     }
 
     for (let i = 0; i < 5; i++) {
