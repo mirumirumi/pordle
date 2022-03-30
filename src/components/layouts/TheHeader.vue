@@ -3,7 +3,7 @@
     <header>
       <div class="dummy"></div>
       <div class="title">
-        <span>Pordle</span>
+        <span>Worpole</span>
       </div>
       <div class="menu">
         <div class="how_to_play" @click="showHowToPlay">
