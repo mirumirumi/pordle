@@ -314,7 +314,7 @@ function generateGraph(isForTweet = false): string {
 const isShownCopied = ref(false)
 
 const share = async (isClear: boolean) => {
-  let result = "Pordle #" + today + " " + (isClear ? currentTrying.value : "x") + "/6" + "\n\n"
+  let result = "Worpole #" + today + " " + (isClear ? currentTrying.value : "x") + "/6" + "\n\n"
   result += generateGraph(true)
   const shareData = { text: result }
   let shareSuccess = false
