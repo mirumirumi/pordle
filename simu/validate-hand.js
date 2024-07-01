@@ -20,7 +20,7 @@ module.exports = (cards) => {
   const numHistory4card = []
   for (const card of cards) {
     numHistory4card.push(card.number)
-    if (4 === numHistory4card.filter(e => e === card.number).length) 
+    if (4 === numHistory4card.filter(e => e === card.number).length)
       return "4-card"
   }
 
@@ -29,7 +29,7 @@ module.exports = (cards) => {
   const numHistory3Card = []
   for (const card of cards) {
     numHistory3Card.push(card.number)
-    if (3 === numHistory3Card.filter(e => e === card.number).length) 
+    if (3 === numHistory3Card.filter(e => e === card.number).length)
       will3Card = true
   }
   
@@ -49,8 +49,9 @@ module.exports = (cards) => {
   cards.forEach(card => nums.push(card.number ?? 0))
   nums.sort(sortAsc)
 
-  if (JSON.stringify(nums) === JSON.stringify([1, 10, 11, 12, 13]))  // case: Broadway (A K Q J 10)
+  if (JSON.stringify(nums) === JSON.stringify([1, 10, 11, 12, 13])) {  // case: Broadway (A K Q J 10)
     return "straight"
+  }
 
   let countup = 0
   for (let i = 0; i < nums.length; i++) {
